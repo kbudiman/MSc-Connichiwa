@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Connichiwa Example Application</title>
+
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<script src="/connichiwa/scripts/gyro.min.js"></script>
+		<script src="/connichiwa/scripts/jquery.js"></script>
+    	<script src="/connichiwa/scripts/ractive.js"></script>
+    	<script src="/connichiwa/connichiwa.min.js"></script>
+    	<script src="/main.js"></script>
+
+    <link rel="stylesheet" href="/styles.css">
+	
+    
+	</head>
+	
+	<body>
+			
+		<div id="log"></div>
+
+		<script>
+		Connichiwa.onLoad(function() {
+		    Connichiwa.on("deviceDetected", function(device) {
+		        $("#log").append(device.getName()+" has been detected!<br/>");
+		        device.connect();
+		    });
+
+		    Connichiwa.on("deviceLost", function(device) {
+		        $("#log").append(device.getName()+" was lost!<br/>");
+		    });
+
+		    Connichiwa.on("deviceDistanceChanged", function(device) {
+		        if (device.isConnected()) {
+		            if (device.distance < 0) {
+		                device.insert("My distance cannot be measured<br/>");
+		            }
+		            else if (device.distance < 0.5) { 
+		                device.insert("I am close!<br/>");
+		            }
+		            else if (device.distance < 5.0) { 
+		                device.insert("I am nearby!<br/>");
+		            }
+		            else { 
+		                device.insert("I am far away!<br/>");
+		            }
+		        }
+		    });
+		});
+		</script>
+	</body>
+</html>
+
