@@ -1,28 +1,37 @@
-Connichiwa.onLoad(function() {
+Connichiwa.onLoad (function () {
 
-  var data = {buttonMsg: " clicked!"};
-  var dataPrompt;
-  var console = $('#console');
-
-  //alert('client');
-
-    $('#button1').click(function(e){
-      //alert('click');
-
-      var person = prompt("Please enter your name", "Harry Potter");
-      if (person != null) {
-        dataPrompt = {promptMsg: person};
-      }
-      Connichiwa.broadcast("buttonClicked", data);
-      Connichiwa.broadcast("promptInput", dataPrompt);
-      //Connichiwa.send("master", "buttonClicked", buttonMsg);
-
-      var msg = $('<div>');
-      msg.html('buttonclicked');
-      console.append(msg);
-    });
+  var data, dataPrompt, console, person;
 
 
+  $ ('#button1').click (function (e) {
 
+    data = {buttonMsg: "clicked"};
+    console = $('#console');
+    person = prompt ("Please enter your name", "Harry Potter");
+
+    if (person != null) {
+      dataPrompt = {promptMsg: person};
+      console.append('Message entered')
+    }
+    //Broadcast button click
+    Connichiwa.broadcast ("buttonClicked", data);
+
+    //Broadcast text input from prompt
+    Connichiwa.broadcast ("promptInput", dataPrompt);
+
+    /*var msg = $('<div>');
+    msg.html('buttonclicked');
+    console.append (msg);*/
+  });
+
+
+  $('#gbImg').click(function(e) {
+    data = {isClicked: true};
+
+    Connichiwa.send("master", "imgClicked", data);
+
+    $('#gbImg').hide();
+  });
+  
 
 });

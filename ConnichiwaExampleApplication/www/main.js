@@ -5,6 +5,9 @@ Connichiwa.onLoad (function () {
   CWTemplates.insert ("master", {target: "body"});
 
   var devices = [];
+  var connectedDevices;
+  var consolePrompt;
+  var data;
 
   //Set the initial template data
   setDetectedDevices (0);
@@ -17,14 +20,20 @@ Connichiwa.onLoad (function () {
   //Let's connect any nearby device automatically
   //Connichiwa.autoConnect = true;
   if (Connichiwa.isMaster ()) {
+
     Connichiwa.autoLoadScripts = ["/main.js"];
     Connichiwa.autoConnect = true;
-    Connichiwa.on ("deviceConnected", function (device) {
-      device.insert ("<b>I am connected!</b>");
 
+    Connichiwa.on ("deviceConnected", function (device) {
+
+      device.insert ("<b>I am connected!</b>");
       //Increase connected devices
       var connectedDevices = CWTemplates.get ('devices_connected_count');
+
       setConnectedDevices (connectedDevices + 1);
+
+      $('#consoleDevices').empty();
+      $('#consoleDevices').append("\n" + CWDeviceManager.getConnectedDevices());
 
       //Load CSS and insert the remote template into the new device. The remote
       //template shows the devices current distance (also see "deviceDistanceChanged")
@@ -35,66 +44,111 @@ Connichiwa.onLoad (function () {
       //use this name to determine which devices UI is updated
       device.loadCSS ("styles.css");
       device.loadTemplates ("template_remote.html");
+
       device.insertTemplate ("remote", {
         target: "body",
         dataSource: device.getIdentifier ()
       });
 
-      updateRemoteDistance (device);
-
+      //Load custom .JS
       device.loadScript ("/connichiwaJStest.js");
 
-      device.send('kevinsresponse', {msg: 'test'});
+      
+      
+      $('#canImg').click(function(e) {
+
+        $('#canImg').hide();
+      });
+
+      updateRemoteDistance (device);
+
+      if(device.toString() != null) {
+        //alert("Device found: " + device.toString());
+      }
 
     });
   }
-
   Connichiwa.on ("deviceDetected", function () {
     //Increase nearby devices
     var detectedDevices = CWTemplates.get ('devices_nearby_count');
     setDetectedDevices (detectedDevices + 1);
   });
+
+
   Connichiwa.on ("deviceLost", function () {
     //Decrease nearby devices
     var detectedDevices = CWTemplates.get ('devices_nearby_count');
     setDetectedDevices (detectedDevices - 1);
   });
 
-
   Connichiwa.on ("deviceConnected", function (device) {
-    log(device);
-    devices.push(device);
+    //log("Device name: " + device.getName());
+    //devices.push(device);
+    //log("Devices: " + devices);
 
     //device.insert("Hi, I'm "+device.getName()+" and I am now part of your app!");
     //device.insert(device.getIdentifier(), "body", "<b>HTML here</b>");
 
+    //When Canadian flag is clicked, hide it
+  });
+
+
+  /*
+  Connichiwa.respond("promptInput", "promptRespond", function(message) {
+    alert("Received reply from " + message.respondMsg);
+  });*/
+
+
+  Connichiwa.onMessage("promptInput", function(message) {
+    var msg = $('<div>');
+    var console = $('#console');
+
+    console.empty();
+    console.append("Hi there, " + message.promptMsg);
   });
 
   Connichiwa.onMessage ("buttonClicked", function (message) {
-    var msg = $ ('<div>');
     var console = $ ('#console');
+    var msg = $ ('<div>');
+
     msg.html (JSON.stringify(message));
     console.append (msg);
     //alert ("I have been: " + message.buttonMsg);
 
-    Connichiwa.send(message._source, 'kevinsresponse', {msg: 'test'});
+    Connichiwa.send("master", "kevinresponse2", {msg: 'clicked.'});
   });
 
-  Connichiwa.onMessage("promptInput", function(message) {
-    var msg = $('<div>');
-    var console = $('#consolePrompt');
-    console.append("Hi there, " + message.promptMsg + " ");
+  Connichiwa.onMessage("kevinresponse2", function (message) {
+
+    //alert ("Received reply: " + message.msg);
+
+    var console = $ ('#consoleResponse');
+    console.empty();
+    console.append("Button has been " + message.msg);
   });
 
-  Connichiwa.onMessage("kevinsresponse", function (message) {
-
-    alert ("Received reply: " + message.msg);
+  Connichiwa.onMessage("imgClicked", function(message) {
+    if(message.isClicked) {
+      $('#canImg').show();
+    }
   });
+
+  Connichiwa.onMessage("imgClicked2", function(message) {
+    if(message.isClicked) {
+      //$('#gbImg').show();
+      alert('Hello');
+    }
+  });
+
+
 
   Connichiwa.on("deviceDisconnected", function () {
     //Decrease connected devices
     var connectedDevices = CWTemplates.get ('devices_connected_count');
     setConnectedDevices (connectedDevices - 1);
+
+    $('#consoleDevices').empty();
+    $('#consoleDevices').append(" " + CWDeviceManager.getConnectedDevices());
   });
 
   //Live-update the distance on remote distance as soon as they change
@@ -130,11 +184,13 @@ Connichiwa.onLoad (function () {
   }
 
   function log(data){
-    var console = $ ('#console');
+    var console = $('#console');
     var msg = $('<div>');
+
     msg.html (JSON.stringify(data));
-    console.append (msg);
+    console.append(msg);
   }
+
 });
 
 //Define onMessage function here..

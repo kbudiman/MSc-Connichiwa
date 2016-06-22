@@ -1,63 +1,80 @@
 <template name="master">
-  <div id="top">&nbsp;</div>
-  <div id="content" class="center">
-    <h1>Connichiwa is running!</h1>
+    <div id="top">&nbsp;</div>
+    <div id="content" class="center">
+        <h1>Connichiwa is running!</h1>
+
+        <aside>
+            <b>Console:</b>
+            <div id="console"></div>
+            <br/>
+
+            <b>Connected devices:</b>
+            <div id="consoleDevices"></div>
+            <br />
+
+            <b>Response:</b>
+            <div id="consoleResponse"></div>
+            <br />
 
 
-    <div id="device_overview">
-    <table>
-      <tr>
-        <td id="devices_nearby_count">
-        {{devices_nearby_count}}
-        </td>
-        <td id="devices_nearby_text_devices">
-        {{devices_nearby_text_devices}}
-        </td>
-        <td id="devices_nearby_text_rest">
-        nearby.
-        </td>
-      </tr>
-      <tr>
-        <td id="devices_connected_count">
-        {{devices_connected_count}}
-        </td>
-        <td id="devices_connected_text_devices">
-        {{devices_connected_text_devices}}
-        </td>
-        <td id="devices_connected_text_rest">
-        connected.
-        </td>
-      </tr>
-      <tr class="invisible">
-        <td>
-        </td>
-        <td>
-        devices
-        </td>
-        <td>
-        </td>
-      </tr>
-    </table>
+            <div id="consoleImg">
+                <img id="canImg" src="/img/can.png" style="display:none" alt="Canada" style="width:300px;height:180px;">
+            </div>
+
+        </aside>
+
+
+
+        <div id="device_overview">
+            <table>
+                <tr>
+                    <td id="devices_nearby_count">
+                        {{devices_nearby_count}}
+                    </td>
+                    <td id="devices_nearby_text_devices">
+                        {{devices_nearby_text_devices}}
+                    </td>
+                    <td id="devices_nearby_text_rest">
+                        nearby.
+                    </td>
+                </tr>
+                <tr>
+                    <td id="devices_connected_count">
+                        {{devices_connected_count}}
+                    </td>
+                    <td id="devices_connected_text_devices">
+                        {{devices_connected_text_devices}}
+                    </td>
+                    <td id="devices_connected_text_rest">
+                        connected.
+                    </td>
+                </tr>
+
+                <tr class="invisible">
+                    <td>
+                    </td>
+                    <td>
+                        devices
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-  </div>
 
-  <div id="console"></div>
 
-  <br />
+    <div id="info">
+        To detect a device:
+        <ul>
+            <li>Run this application on another iOS device</li>
+            <li>Run the Connichiwa Client for Mac on a Mac (<span class="url">http://mac.connichiwa.info</span>)</li>
+        </ul>
 
-  <div id="consolePrompt"></div>
-
-  <div id="info">
-    To detect a device:
-    <ul>
-      <li>Run this application on another iOS device</li>
-      <li>Run the Connichiwa Client for Mac on a Mac (<span class="url">http://mac.connichiwa.info</span>)</li>
-    </ul>
-
-    To connect a device:
-    <ul>
-      <li>Any detected device will automatically be connected</li>
-      <li>Access <span class="url">{{local_url}}</span> in a web browser on devices in the same network</li>
-    </ul>
-  </div>
+        To connect a device:
+        <ul>
+            <li>Any detected device will automatically be connected</li>
+            <li>Access <span class="url">{{local_url}}</span> in a web browser on devices in the same network</li>
+        </ul>
+    </div>
 </template>
