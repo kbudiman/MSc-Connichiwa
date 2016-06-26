@@ -27,6 +27,7 @@ Connichiwa.onLoad (function () {
     Connichiwa.on ("deviceConnected", function (device) {
 
       device.insert ("<b>I am connected!</b>");
+
       //Increase connected devices
       var connectedDevices = CWTemplates.get ('devices_connected_count');
 
@@ -52,12 +53,17 @@ Connichiwa.onLoad (function () {
 
       //Load custom .JS
       device.loadScript ("/connichiwaJStest.js");
+      device.loadScript ("/camera.js");
 
-      
-      
+
+
+
+
       $('#canImg').click(function(e) {
 
         $('#canImg').hide();
+        Connichiwa.insert(device, "<script>$('#gbImg').show();</script>");
+
       });
 
       updateRemoteDistance (device);
@@ -82,6 +88,8 @@ Connichiwa.onLoad (function () {
   });
 
   Connichiwa.on ("deviceConnected", function (device) {
+
+    device.send("alreadyClicked", {clicked: "clicked!"});
     //log("Device name: " + device.getName());
     //devices.push(device);
     //log("Devices: " + devices);
@@ -90,13 +98,20 @@ Connichiwa.onLoad (function () {
     //device.insert(device.getIdentifier(), "body", "<b>HTML here</b>");
 
     //When Canadian flag is clicked, hide it
+
   });
 
+  Connichiwa.onMessage("alreadyClicked", function(message) {
+    //$('#gbImg').show();
+    var console = $('#consoleTest');
+    console.append('img has been' + message.clicked);
+  });
 
   /*
   Connichiwa.respond("promptInput", "promptRespond", function(message) {
     alert("Received reply from " + message.respondMsg);
   });*/
+
 
 
   Connichiwa.onMessage("promptInput", function(message) {
@@ -116,12 +131,10 @@ Connichiwa.onLoad (function () {
     //alert ("I have been: " + message.buttonMsg);
 
     Connichiwa.send("master", "kevinresponse2", {msg: 'clicked.'});
+
   });
 
   Connichiwa.onMessage("kevinresponse2", function (message) {
-
-    //alert ("Received reply: " + message.msg);
-
     var console = $ ('#consoleResponse');
     console.empty();
     console.append("Button has been " + message.msg);
@@ -133,12 +146,11 @@ Connichiwa.onLoad (function () {
     }
   });
 
-  Connichiwa.onMessage("imgClicked2", function(message) {
-    if(message.isClicked) {
-      //$('#gbImg').show();
-      alert('Hello');
-    }
+  Connichiwa.onMessage("imgTransfer", function(message) {
+    $("#camImg").attr("src", message.imgUrlKey);
   });
+
+  
 
 
 
@@ -193,7 +205,6 @@ Connichiwa.onLoad (function () {
 
 });
 
-//Define onMessage function here..
 
 
 function pluralize (word, number) {

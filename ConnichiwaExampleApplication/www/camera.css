@@ -1,0 +1,16 @@
+#yourimage {
+    width: 50%;
+}
+
+#swatches {
+    width: 100%;
+    height: 50px;
+}
+.swatch {
+    width:18%;
+    height: 50px;
+    border-style: solid;
+    border-width: thin;
+    float: left;
+    margin-right: 3px;
+}
