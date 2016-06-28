@@ -9,6 +9,7 @@ Connichiwa.onLoad (function () {
   var consolePrompt;
   var data;
 
+  
   //Set the initial template data
   setDetectedDevices (0);
   setConnectedDevices (0);
@@ -16,6 +17,7 @@ Connichiwa.onLoad (function () {
   if (ips.length > 0) {
     CWTemplates.set ("local_url", ips[0] + ":" + Connichiwa.getPort ());
   }
+
 
   //Let's connect any nearby device automatically
   //Connichiwa.autoConnect = true;
@@ -58,22 +60,18 @@ Connichiwa.onLoad (function () {
 
 
 
-
+      // Test: when Canadian flag is clicked, GB flag should be shown on client device
       $('#canImg').click(function(e) {
-
         $('#canImg').hide();
-        Connichiwa.insert(device, "<script>$('#gbImg').show();</script>");
+        Connichiwa.insert(device[0], "<script>$('#gbImg').show();</script>");
 
       });
 
       updateRemoteDistance (device);
 
-      if(device.toString() != null) {
-        //alert("Device found: " + device.toString());
-      }
-
     });
   }
+
   Connichiwa.on ("deviceDetected", function () {
     //Increase nearby devices
     var detectedDevices = CWTemplates.get ('devices_nearby_count');
@@ -91,13 +89,9 @@ Connichiwa.onLoad (function () {
 
     device.send("alreadyClicked", {clicked: "clicked!"});
     //log("Device name: " + device.getName());
-    //devices.push(device);
+
+    devices.push(device);
     //log("Devices: " + devices);
-
-    //device.insert("Hi, I'm "+device.getName()+" and I am now part of your app!");
-    //device.insert(device.getIdentifier(), "body", "<b>HTML here</b>");
-
-    //When Canadian flag is clicked, hide it
 
   });
 
@@ -147,10 +141,24 @@ Connichiwa.onLoad (function () {
   });
 
   Connichiwa.onMessage("imgTransfer", function(message) {
-    $("#camImg").attr("src", message.imgUrlKey);
+
+    var console = $ ('#console');
+    console.append(message.imgUrlKey);
+
+    var camImg = document.createElement("IMG");
+    var camDiv = document.getElementById("consoleCameraImg");
+
+    camImg.src = message.imgUrlKey;
+    camImg.setAttribute('id', 'camImg');
+    camImg.style.width = '100%';
+    camImg.style.height = 'auto';
+    camDiv.appendChild(camImg);
+    
+
+    //$("#camImg").attr("src", message.imgUrlKey);
+
   });
 
-  
 
 
 
@@ -167,6 +175,27 @@ Connichiwa.onLoad (function () {
   Connichiwa.on ("deviceDistanceChanged", function (device) {
     updateRemoteDistance (device);
   });
+
+
+  
+
+  //Creating new Image data from URL data
+  /*function convertDataURLToImageData(dataURL, callback) {
+    if (dataURL !== undefined && dataURL !== null) {
+      var canvas, context, image;
+      canvas = document.createElement('canvas');
+      canvas.setAttribute('id', 'camCanvas');
+      canvas.width = 370;
+      canvas.height = 370;
+      context = canvas.getContext('2d');
+      image = new Image();
+      image.addEventListener('load', function(){
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        callback(context.getImageData(0, 0, canvas.width, canvas.height));
+      }, false);
+      image.src = dataURL;
+    }
+  }*/
 
 
   function setDetectedDevices (value) {

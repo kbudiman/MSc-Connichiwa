@@ -13,6 +13,7 @@ Connichiwa.onLoad (function () {
       dataPrompt = {promptMsg: person};
       console.append('Message entered')
     }
+
     //Broadcast button click
     Connichiwa.broadcast ("buttonClicked", data);
 
@@ -32,6 +33,6 @@ Connichiwa.onLoad (function () {
 
     $('#gbImg').hide();
   });
-  
+
 
 });
