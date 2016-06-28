@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec561fdf-e871-4375-a0cd-5d6090bca4c2" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/maps.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/maps.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.js" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/connichiwaJStest.js" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/connichiwaJStest.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/index.html" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_remote.html" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_remote.html" />
     </list>
     <ignored path="Connichiwa-Example-Application-master.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,17 +29,17 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="152" column="28" selection-start-line="152" selection-start-column="28" selection-end-line="152" selection-end-column="28" />
+            <state relative-caret-position="705">
+              <caret line="48" column="26" selection-start-line="48" selection-start-column="26" selection-end-line="48" selection-end-column="26" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="camera.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="camera.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="495">
@@ -72,11 +74,22 @@
       <file leaf-file-name="template_remote.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_remote.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="23" column="65" selection-start-line="23" selection-start-column="65" selection-end-line="23" selection-end-column="65" />
+            <state relative-caret-position="-415">
+              <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
               <folding>
-                <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -84,8 +97,8 @@
       <file leaf-file-name="template_master.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="24" column="61" selection-start-line="24" selection-start-column="61" selection-end-line="24" selection-end-column="61" />
+            <state relative-caret-position="405">
+              <caret line="27" column="12" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
               <folding>
                 <element signature="n#style#0;n#img#0;n#div#3;n#aside#0;n#div#1;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#1;n#img#0;n#div#3;n#aside#0;n#div#1;n#template#0;n#!!top" expanded="true" />
@@ -109,13 +122,15 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/index.html" />
-        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_remote.html" />
         <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.css" />
         <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/connichiwaJStest.js" />
+        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.js" />
+        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/maps.css" />
+        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/maps.js" />
+        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/index.html" />
         <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html" />
         <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js" />
-        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.js" />
+        <option value="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_remote.html" />
       </list>
     </option>
   </component>
@@ -344,12 +359,12 @@
       <workItem from="1466421733786" duration="4653000" />
       <workItem from="1466530227481" duration="5317000" />
       <workItem from="1466543426147" duration="304000" />
-      <workItem from="1466543797685" duration="47102000" />
+      <workItem from="1466543797685" duration="49332000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67739000" />
+    <option name="totallyTimeSpent" value="69969000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -436,7 +451,8 @@
         <state relative-caret-position="210">
           <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
           <folding>
-            <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -473,7 +489,8 @@
         <state relative-caret-position="210">
           <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
           <folding>
-            <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -521,7 +538,8 @@
         <state relative-caret-position="135">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
           <folding>
-            <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -558,7 +576,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -595,7 +614,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -646,7 +666,8 @@
         <state relative-caret-position="135">
           <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
           <folding>
-            <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -687,31 +708,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/index.html">
+    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="61" selection-start-line="24" selection-start-column="61" selection-end-line="24" selection-end-column="61" />
+        <state relative-caret-position="495">
+          <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
           <folding>
-            <element signature="n#style#0;n#img#0;n#div#3;n#aside#0;n#div#1;n#template#0;n#!!top" expanded="true" />
-            <element signature="n#style#1;n#img#0;n#div#3;n#aside#0;n#div#1;n#template#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_remote.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="23" column="65" selection-start-line="23" selection-start-column="65" selection-end-line="23" selection-end-column="65" />
-          <folding>
-            <element signature="n#style#0;n#img#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="e#0#42#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -732,21 +734,57 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js">
+    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/maps.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="152" column="28" selection-start-line="152" selection-start-column="28" selection-end-line="152" selection-end-column="28" />
+        <state relative-caret-position="105">
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/camera.js">
+    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/maps.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="54" column="22" selection-start-line="54" selection-start-column="22" selection-end-line="54" selection-end-column="22" />
+        <state relative-caret-position="90">
+          <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="12" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
           <folding>
-            <element signature="e#0#42#0" expanded="false" />
+            <element signature="n#style#0;n#img#0;n#div#3;n#aside#0;n#div#1;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#1;n#img#0;n#div#3;n#aside#0;n#div#1;n#template#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_remote.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-415">
+          <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+          <folding>
+            <element signature="n#style#0;n#img#0;n#div#0;n#section#3;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#section#4;n#div#0;n#body#0;n#template#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="705">
+          <caret line="48" column="26" selection-start-line="48" selection-start-column="26" selection-end-line="48" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>

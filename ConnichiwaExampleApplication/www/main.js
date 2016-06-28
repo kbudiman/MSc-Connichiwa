@@ -46,6 +46,7 @@ Connichiwa.onLoad (function () {
       //its individual distance). As you will see in updateRemoteDistance(), we
       //use this name to determine which devices UI is updated
       device.loadCSS ("styles.css");
+      device.loadCSS("maps.css");
       device.loadTemplates ("template_remote.html");
 
       device.insertTemplate ("remote", {
@@ -56,6 +57,7 @@ Connichiwa.onLoad (function () {
       //Load custom .JS
       device.loadScript ("/connichiwaJStest.js");
       device.loadScript ("/camera.js");
+      //device.loadScript ("/maps.js");
 
 
 
