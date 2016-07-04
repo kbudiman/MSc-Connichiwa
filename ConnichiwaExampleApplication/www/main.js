@@ -6,7 +6,7 @@ Connichiwa.onLoad (function () {
 
   var devices = []; // Array to store connected devices
   var deviceCounter;
-  var connectedDevices;
+  var button2data;
 
   
   //Set the initial template data
@@ -78,16 +78,32 @@ Connichiwa.onLoad (function () {
 
       deviceCounter += 1;
 
+      //button2data = {button2msg: 'clicked2!'};
+      //Connichiwa.broadcast("button2Respond", button2data);
+
+      //Connichiwa.send(devices[0], 'sendTest', mydata);
 
       $('#canImg').click(function(e) {
         $('#canImg').hide();
-        devices[0].insert("<script>$('#gbImg').show();</script>");
+        //devices[0].insert("<script>$('#gbImg').show();</script>");
       });
 
+
+      $('#button2').click(function (e) {
+        $('#console').append('button2 clicked');
+        devices[0].insert("and text has been inserted");
+
+        button2data = {button2msg : 'clicked2!'};
+        alert(devices[0].toString());
+        devices[0].send('button2Respond', button2data);
+
+        //Connichiwa.broadcast("button2Respond", button2data);
+      });
       updateRemoteDistance (device);
 
     });
   }
+
 
   // DEVICE DETECTION
   Connichiwa.on ("deviceDetected", function () {
@@ -121,7 +137,6 @@ Connichiwa.onLoad (function () {
    Connichiwa.respond("promptInput", "promptRespond", function(message) {
    alert("Received reply from " + message.respondMsg);
    });*/
-
 
 
 
@@ -190,6 +205,8 @@ Connichiwa.onLoad (function () {
 
     consoleTest.append("connected device success  img has been" + message.clicked);
   });
+
+  
 
 
   function setDetectedDevices (value) {

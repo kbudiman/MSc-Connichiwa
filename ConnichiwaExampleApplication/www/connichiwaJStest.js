@@ -36,4 +36,13 @@ Connichiwa.onLoad (function () {
     $('#gbImg').hide();
   });
 
+  Connichiwa.onMessage("button2Respond", function (message) {
+
+    //alert('enter button2Respond' + message.button2msg);
+
+    $('#consoleTest').append(message.button2msg);
+
+
+  });
+
 });
