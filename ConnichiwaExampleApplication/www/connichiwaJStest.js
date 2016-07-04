@@ -2,7 +2,7 @@ Connichiwa.onLoad (function () {
 
   var data, dataPrompt, console, person;
 
-
+  // Test Case 1 & 2: BUTTON CLICK, SEND TEXT
   $ ('#button1').click (function (e) {
 
     data = {buttonMsg: "clicked"};
@@ -26,6 +26,8 @@ Connichiwa.onLoad (function () {
   });
 
 
+
+  // Test Case 3: BOOLEAN IMAGE
   $('#gbImg').click(function(e) {
     data = {isClicked: true};
 
@@ -33,6 +35,5 @@ Connichiwa.onLoad (function () {
 
     $('#gbImg').hide();
   });
-
 
 });

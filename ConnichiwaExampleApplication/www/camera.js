@@ -10,7 +10,7 @@ Connichiwa.onLoad(function () {
     //$("#yourimage").load(getSwatches);
     desiredWidth = window.innerWidth;
 
-    if(!("url" in window) && ("webkitURL" in window)) {
+    if(!("url" in window) && ("URL" in window)) {
       window.URL = window.webkitURL;
     }
   });
