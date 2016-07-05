@@ -6,7 +6,7 @@ Connichiwa.onLoad (function () {
 
   var devices = []; // Array to store connected devices
   var deviceCounter;
-  var button2data;
+  var button2data, imgData;
 
   
   //Set the initial template data
@@ -37,15 +37,11 @@ Connichiwa.onLoad (function () {
 
       devices[deviceCounter].insert ("Device" + connectedDevices + ": "+ "<b>I am connected!</b>");
 
-      var mydata = {clicked: 'clicked2!'};
-
-      // Test: when Canadian flag is clicked, GB flag should be shown on client device
 
 
-
-      //Load custom .JS
-      //device.loadScript ("/maps.js");
-      //device.loadCSS("maps.css");
+      //Load custom GoogleMaps .JS
+      device.loadScript ("maps.js");
+      device.loadCSS("maps.css");
 
       //Load CSS and insert the remote template into the new device. The remote
       //template shows the devices current distance (also see "deviceDistanceChanged")
@@ -70,22 +66,22 @@ Connichiwa.onLoad (function () {
       });
 
 
-
       device.loadScript ("/connichiwaJStest.js");
       device.loadScript ("/camera.js");
 
-      devices[0].send("sendTest", mydata); //Send function don't work for remote
 
       deviceCounter += 1;
 
       //button2data = {button2msg: 'clicked2!'};
       //Connichiwa.broadcast("button2Respond", button2data);
 
-      //Connichiwa.send(devices[0], 'sendTest', mydata);
+
 
       $('#canImg').click(function(e) {
         $('#canImg').hide();
         //devices[0].insert("<script>$('#gbImg').show();</script>");
+        imgData = {imgClicked: true};
+        devices[0].send("imgRespond", imgData);
       });
 
 
@@ -94,7 +90,7 @@ Connichiwa.onLoad (function () {
         devices[0].insert("and text has been inserted");
 
         button2data = {button2msg : 'clicked2!'};
-        alert(devices[0].toString());
+        //alert(devices[0].toString());
         devices[0].send('button2Respond', button2data);
 
         //Connichiwa.broadcast("button2Respond", button2data);
@@ -125,7 +121,6 @@ Connichiwa.onLoad (function () {
 
     $('#consoleDevices').empty();
     $('#consoleDevices').append(" " + CWDeviceManager.getConnectedDevices());
-
   });
 
   //Live-update the distance on remote distance as soon as they change
@@ -140,6 +135,7 @@ Connichiwa.onLoad (function () {
 
 
 
+  /*onMessage functions for Tests 1-5*/
   // TEST 1 - OnMessage for Button Click
   Connichiwa.onMessage ("buttonClicked", function (message) {
     var console = $ ('#console');
@@ -150,16 +146,15 @@ Connichiwa.onLoad (function () {
     //alert ("I have been: " + message.buttonMsg);
 
     // Test for send method (from remote to master device)
-    Connichiwa.send("master", "kevinresponse2", {msg: 'clicked.'});
+    Connichiwa.send("master", "buttonResponse", {msg: 'clicked.'});
   });
 
   // On message respond for remote-to-master test
-  Connichiwa.onMessage("kevinresponse2", function (message) {
+  Connichiwa.onMessage("buttonResponse", function (message) {
     var console = $ ('#consoleResponse');
     console.empty();
     console.append("Button has been " + message.msg);
   });
-
 
   // TEST 2 - Text prompt input
   Connichiwa.onMessage("promptInput", function(message) {
@@ -170,14 +165,12 @@ Connichiwa.onLoad (function () {
     console.append("Hi there, " + message.promptMsg);
   });
 
-
   // TEST 3 - Boolean passed when flags image are clicked
   Connichiwa.onMessage("imgClicked", function(message) {
     if(message.isClicked) {
       $('#canImg').show();
     }
   });
-
 
   // TEST 4 - Create new canvas for transferred picture
   Connichiwa.onMessage("imgTransfer", function(message) {
@@ -195,18 +188,6 @@ Connichiwa.onLoad (function () {
     camDiv.appendChild(camImg);
 
   });
-
-  // Test for 'send' method (failed when sending from master-to-remote device)
-  Connichiwa.onMessage("sendTest", function(message) {
-    //$('#gbImg').show();
-    alert('hello');
-    alert(message.clicked);
-    var consoleTest = $('#consoleTest');
-
-    consoleTest.append("connected device success  img has been" + message.clicked);
-  });
-
-  
 
 
   function setDetectedDevices (value) {

@@ -2,7 +2,7 @@ Connichiwa.onLoad (function () {
 
   var data, dataPrompt, console, person;
 
-  // Test Case 1 & 2: BUTTON CLICK, SEND TEXT
+  // TEST 1 & 2: BUTTON CLICK, SEND TEXT
   $ ('#button1').click (function (e) {
 
     data = {buttonMsg: "clicked"};
@@ -20,6 +20,8 @@ Connichiwa.onLoad (function () {
     //Broadcast text input from prompt
     Connichiwa.broadcast ("promptInput", dataPrompt);
 
+    Connichiwa.broadcast("buttonRemoteClicked", {clicked: 'remoteButton is clicked'});
+
     /*var msg = $('<div>');
     msg.html('buttonclicked');
     console.append (msg);*/
@@ -36,13 +38,22 @@ Connichiwa.onLoad (function () {
     $('#gbImg').hide();
   });
 
-  Connichiwa.onMessage("button2Respond", function (message) {
+  Connichiwa.onMessage("imgRespond", function (message) {
 
-    //alert('enter button2Respond' + message.button2msg);
-
-    $('#consoleTest').append(message.button2msg);
-
-
+    if(message.imgClicked) {
+      $('#gbImg').show();
+    }
   });
+
+  // TEST 5 - Send method from master-to-remote
+  Connichiwa.onMessage("button2Respond", function (message) {
+    //alert('enter button2Respond' + message.button2msg);
+    $('#consoleTest').append(message.button2msg);
+  });
+
+  Connichiwa.onMessage("buttonRemoteClicked", function(message) {
+    $('#consoleTest').append(message.clicked);
+  });
+  
 
 });
