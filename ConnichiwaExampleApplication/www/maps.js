@@ -11,7 +11,6 @@ function initMap () {
   map.addListener ('click', function (e) {
     placeMarkerAndPanTo (e.latLng, map);
     Connichiwa.broadcast ('remoteLatLng', {remotePosition: e.latLng});
-
   });
 }
 

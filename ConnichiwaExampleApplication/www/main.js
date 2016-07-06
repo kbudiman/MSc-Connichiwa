@@ -40,7 +40,8 @@ Connichiwa.onLoad (function () {
 
 
       //Load custom GoogleMaps .JS
-      device.loadScript ("maps.js");
+      //device.loadScript ("maps.js");
+      device.loadScript("remoteDeviceMap.js");
       device.loadCSS("maps.css");
 
       //Load CSS and insert the remote template into the new device. The remote
@@ -66,8 +67,8 @@ Connichiwa.onLoad (function () {
       });
 
 
-      device.loadScript ("/connichiwaJStest.js");
-      device.loadScript ("/camera.js");
+      //device.loadScript ("/connichiwaJStest.js");
+      //device.loadScript ("/camera.js");
 
 
       deviceCounter += 1;

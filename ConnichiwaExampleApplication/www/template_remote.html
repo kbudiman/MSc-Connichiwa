@@ -48,6 +48,14 @@
 
   </div>
 
+  <div id="floating-panel" style="display:none">
+    <input onclick="shareMarker();" type=button value="Share">
+    <input onclick="annotateMarker();" type=button value="Annotate">
+    <input onclick="deleteMarker();" type=button value="Delete">
+  </div>
+
+  <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
   <div id="map"></div>
   <!--script>
     var map;
@@ -58,8 +66,11 @@
       });
     }
   </script-->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpDWib2HUkcAdUgBE3SGnCXHaQsw-aX8w&callback=initMap" async defer>
-  </script>
+  <!--script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpDWib2HUkcAdUgBE3SGnCXHaQsw-aX8w&callback=initMap" async defer>
+  </script-->
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpDWib2HUkcAdUgBE3SGnCXHaQsw-aX8w&libraries=places&callback=initMap"
+          async defer></script>
 
   </body>
 
