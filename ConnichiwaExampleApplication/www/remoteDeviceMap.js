@@ -125,10 +125,12 @@ var getMarkerUniqueId= function(lat, lng) {
 function placeMarkerAndPanTo (latLng, map, lat, lng) {
 
   //alert('sharedMarkers: ' + lat + '_' + lng);
+  var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
   var markerId = getMarkerUniqueId(lat,lng);
   var marker = new google.maps.Marker ({
     position: latLng,
     map: map,
+    icon: image,
     id: 'marker_' + markerId
   });
 
@@ -162,11 +164,11 @@ function annotateMarker() {
  * @param {!string} markerId Id of marker.
  */
 function delMarkerLatLng(lat, lng) {
-  alert('delMarkersLatLng: ' + lat + '_' + lng);
+  //alert('delMarkersLatLng: ' + lat + '_' + lng);
   var delMarkerId = getMarkerUniqueId(lat, lng);
   var delMarker = savedRemoteMarkers[delMarkerId];
 
-  alert(delMarker);
+  //alert(delMarker);
   removeMarker(delMarker, delMarkerId);
 }
 
@@ -176,9 +178,13 @@ function removeMarker(marker, markerId) {
 }
 
 function deleteMarker() {
-  alert('entering deleteMarker ' + lat +'_' + lng);
+  //alert('entering deleteMarker ' + lat +'_' + lng);
   delMarkerLatLng(lat, lng);
   Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng});
+  $('#floating-panel').hide();
+}
+
+function closePanel () {
   $('#floating-panel').hide();
 }
 
