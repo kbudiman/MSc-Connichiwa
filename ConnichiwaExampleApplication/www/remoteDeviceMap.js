@@ -10,10 +10,13 @@
 // parameter when you first load the API. For example:
 // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
+var markerId;
 var map;
-var marker;
+var localMarker;
 var markerLatLng;
-var savedMarkers = [];
+var lat, lng;
+var savedMarkers = {};
+var savedRemoteMarkers = {};
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -62,7 +65,7 @@ function initMap() {
       };
 
       // Create a marker for each place.
-      marker = new google.maps.Marker({
+      localMarker = new google.maps.Marker({
         map: map,
         // icon: icon,
         title: place.name,
@@ -75,11 +78,14 @@ function initMap() {
         markerLatLng = e.latLng;
       });*/
 
-      markers.push(marker);
+      markers.push(localMarker);
       markers.forEach(function(marker) {
         marker.addListener('click', function (e) {
           $('#floating-panel').show();
+
           markerLatLng = e.latLng;
+          lng = e.latLng.lng(); // lng of clicked point;
+          lat = e.latLng.lat(); // lat of clicked point;
         });
       });
 
@@ -95,29 +101,54 @@ function initMap() {
   });
 }
 
-Connichiwa.onMessage('remoteLatLng', function (message) {
-  placeMarkerAndPanTo(message.remotePosition, map);
+Connichiwa.onMessage('shareMarker', function (message) {
+  lat = message.remoteLat;
+  lng = message.remoteLng;
+
+  placeMarkerAndPanTo(message.remotePosition, map, lat, lng);
 });
 
-function placeMarkerAndPanTo (latLng, map) {
+
+
+/**
+ * Concatenates given lat and lng with an underscore and returns it.
+ * This id will be used as a key of marker to cache the marker in markers object.
+ * @param {!number} lat Latitude.
+ * @param {!number} lng Longitude.
+ * @return {string} Concatenated marker id.
+ */
+var getMarkerUniqueId= function(lat, lng) {
+  return lat + '_' + lng;
+};
+
+
+function placeMarkerAndPanTo (latLng, map, lat, lng) {
+
+  //alert('sharedMarkers: ' + lat + '_' + lng);
+  var markerId = getMarkerUniqueId(lat,lng);
   var marker = new google.maps.Marker ({
     position: latLng,
-    map: map
+    map: map,
+    id: 'marker_' + markerId
   });
+
 
   marker.addListener('click', function (e) {
     $('#floating-panel').show();
     markerLatLng = e.latLng;
   });
 
-  savedMarkers.push(marker);
+  savedMarkers[markerId] = marker;
+  savedRemoteMarkers[markerId] = marker;
+
+  //savedMarkers.push(marker);
   //map.panTo(latLng);
 }
 
 // Broadcast marker's lat and lng to other connected devices
 function shareMarker() {
-  placeMarkerAndPanTo (markerLatLng, map);
-  Connichiwa.broadcast ('remoteLatLng', {remotePosition: markerLatLng});
+  placeMarkerAndPanTo (markerLatLng, map, lat, lng);
+  Connichiwa.broadcast ('shareMarker', {remotePosition: markerLatLng, remoteLat: lat, remoteLng: lng});
   $('#floating-panel').hide();
 }
 
@@ -125,6 +156,33 @@ function annotateMarker() {
 
 }
 
-function deleteMarker() {
+/**
+ * Removes given marker from map.
+ * @param {!google.maps.Marker} marker A google.maps.Marker instance that will be removed.
+ * @param {!string} markerId Id of marker.
+ */
+function delMarkerLatLng(lat, lng) {
+  alert('delMarkersLatLng: ' + lat + '_' + lng);
+  var delMarkerId = getMarkerUniqueId(lat, lng);
+  var delMarker = savedRemoteMarkers[delMarkerId];
 
+  alert(delMarker);
+  removeMarker(delMarker, delMarkerId);
 }
+
+function removeMarker(marker, markerId) {
+  marker.setMap(null); // set markers setMap to null to remove it from map
+  delete savedMarkers[markerId]; // delete marker instance from markers object
+}
+
+function deleteMarker() {
+  alert('entering deleteMarker ' + lat +'_' + lng);
+  delMarkerLatLng(lat, lng);
+  Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng});
+  $('#floating-panel').hide();
+}
+
+Connichiwa.onMessage('deleteMarker', function (message) {
+  //removeMarker(message.remoteMarker, message.remoteMarkerId);
+  delMarkerLatLng(message.remoteMarkerLat, message.remoteMarkerLng);
+});
