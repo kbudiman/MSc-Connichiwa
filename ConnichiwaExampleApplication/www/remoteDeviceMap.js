@@ -224,7 +224,7 @@ function placeMarkerAndPanTo (latLng, map, lat, lng, placeName) {
   var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
   var markerId = getMarkerUniqueId(lat,lng);
 
-  if(savedMarkers[markerId] == null) {
+  if(!savedMarkers[markerId]) {
     var marker = new google.maps.Marker ({
       position: latLng,
       map: map,

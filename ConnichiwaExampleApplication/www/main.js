@@ -1,3 +1,8 @@
+var map;
+var lat,lng, latLng, placeName;
+var savedMarkers = {};
+var infoWindows ={};
+
 //All Connichiwa-related stuff should always be done in Connichiwa.onLoad()
 Connichiwa.onLoad (function () {
   //Get our master template and insert it into the body
@@ -8,8 +13,6 @@ Connichiwa.onLoad (function () {
   var deviceCounter;
   var button2data, imgData;
 
-  var lat,lng;
-  var savedMarkers = {};
 
   
   //Set the initial template data
@@ -138,15 +141,6 @@ Connichiwa.onLoad (function () {
    });*/
 
 
-  // OnMessage for GoogleMaps
-  // Broadcast marker's lat and lng to other connected devices
-  Connichiwa.onMessage('broadcastLatLng', function (message) {
-    lat = message.myLat;
-    lng = message.myLng;
-    alert(lat + '_' + lng);
-  });
-
-
 
 
   /*onMessage functions for Tests 1-5*/
@@ -242,10 +236,86 @@ Connichiwa.onLoad (function () {
 
 function initMap () {
   map = new google.maps.Map (document.getElementById ('map'), {
-    zoom: 4,
-    center: {lat: -25.363882, lng: 131.044922}
+    zoom: 13,
+    draggable: false,
+    scrollwheel: false,
+    center: {lat: -33.8688, lng: 151.2195},
+    panControl: false,
+    maxZoom: 13,
+    minZoom: 13
   });
 }
+
+
+// OnMessage for GoogleMaps
+// Broadcast marker's lat and lng to other connected devices
+Connichiwa.onMessage('shareMarker', function (message) {
+  lat = message.remoteLat;
+  lng = message.remoteLng;
+  latLng = message.remotePosition;
+  placeName = message.remoteName;
+
+  var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+  var markerId = getMarkerUniqueId(lat,lng);
+
+  if(!savedMarkers[markerId]) {
+  var marker = new google.maps.Marker ({
+    position: latLng,
+    map: map,
+    icon: image,
+    id: 'marker_' + markerId
+  });
+
+  savedMarkers[markerId] = marker;
+
+  createInfoWindow(map, lat, lng, placeName);
+  }
+});
+
+
+Connichiwa.onMessage('anotateMarker', function (message) {
+  lat = message.remoteMarkerLat;
+  lng = message.remoteMarkerLng;
+
+  var markerId = getMarkerUniqueId(lat, lng);
+  infoWindows[markerId].setContent(message.remotePrompt);
+
+  //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
+});
+
+Connichiwa.onMessage('deleteMarker', function (message) {
+  //removeMarker(message.remoteMarker, message.remoteMarkerId);
+  var delMarkerId = getMarkerUniqueId(message.remoteMarkerLat, message.remoteMarkerLng);
+  var delMarker = savedMarkers[delMarkerId];
+
+  delMarker.setMap(null);
+  delete delMarker;
+});
+
+var getMarkerUniqueId= function(lat, lng) {
+  return lat + '_' + lng;
+};
+
+function createInfoWindow(map, lat, lng, placeName) {
+  var markerId = getMarkerUniqueId(lat, lng);
+  var marker = savedMarkers[markerId];
+  var contentString = placeName;
+
+
+  var infowindow = new google.maps.InfoWindow({
+    content: contentString
+  });
+
+  infoWindows[markerId] = infowindow;
+
+  marker.addListener('click', function() {
+    infowindow.open(map, marker);
+  });
+
+  infowindow.open(map, marker);
+}
+
+
 
 function pluralize (word, number) {
   if (number === 1) return word;
