@@ -12,7 +12,6 @@
 
 var markerId;
 var map;
-var order;
 var localMarker;
 var localPlaceName;
 var markerLatLng;
@@ -93,6 +92,9 @@ function initMap() {
       markers.forEach(function(marker) {
         marker.addListener('click', function (e) {
           $('#floating-panel').show();
+          $('#btn_share').show();
+          $('#btn_annotate').hide();
+          $('#btn_delete').hide();
 
           markerLatLng = e.latLng;
           lat = e.latLng.lat(); // lat of clicked point;
@@ -170,14 +172,18 @@ function deleteMarker() {
 function promptHoursAndOrder(lat, lng) {
   var markerId = getMarkerUniqueId(lat, lng);
   var contentString;
+  var order;
 
   order = prompt('Please enter the Visit Order and Duration (in hours) - e.g. 1, 0.5');
   contentString = placeNames[markerId] + ' ' + order;
 
-  if(order != '' || order != null) {
+  if(!order) {
+    //alert('order is null');
+    //order = '';
+  }
+  else {
     infoWindows[markerId].setContent(contentString);
     Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString});
-    order = '';
   }
 
 }
@@ -217,31 +223,35 @@ var getMarkerUniqueId= function(lat, lng) {
 function placeMarkerAndPanTo (latLng, map, lat, lng, placeName) {
   var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
   var markerId = getMarkerUniqueId(lat,lng);
-  var marker = new google.maps.Marker ({
-    position: latLng,
-    map: map,
-    icon: image,
-    id: 'marker_' + markerId
-  });
+
+  if(savedMarkers[markerId] == null) {
+    var marker = new google.maps.Marker ({
+      position: latLng,
+      map: map,
+      icon: image,
+      id: 'marker_' + markerId
+    });
 
 
-  bindMarkerEvents(marker, map, lat, lng);
+    bindMarkerEvents(marker, map, lat, lng);
 
 
-  /*marker.addListener('click', function (e) {
-    $('#floating-panel').show();
-    markerLatLng = e.latLng;
+    /*marker.addListener('click', function (e) {
+      $('#floating-panel').show();
+      markerLatLng = e.latLng;
 
-    //lng = e.latLng.lng(); // lng of clicked point;
-    //lat = e.latLng.lat(); // lat of clicked point;
+      //lng = e.latLng.lng(); // lng of clicked point;
+      //lat = e.latLng.lat(); // lat of clicked point;
 
-  });*/
+    });*/
 
-  placeNames[markerId] = placeName;
-  savedMarkers[markerId] = marker;
-  savedRemoteMarkers[markerId] = marker;
+    placeNames[markerId] = placeName;
+    savedMarkers[markerId] = marker;
+    savedRemoteMarkers[markerId] = marker;
 
-  createInfoWindow(map, lat, lng, placeName);
+    createInfoWindow(map, lat, lng, placeName);
+  }
+
 
 
   //savedMarkers.push(marker);
@@ -287,6 +297,11 @@ var bindMarkerEvents = function(marker, map, lat, lng) {
     //createInfoWindow(map, lat, lng);
 
     $('#floating-panel').show();
+    $('#btn_annotate').show();
+    $('#btn_delete').show();
+    $('#btn_share').hide();
+
+
     activeLat = point.latLng.lat();
     activeLng = point.latLng.lng();
 

@@ -8,6 +8,9 @@ Connichiwa.onLoad (function () {
   var deviceCounter;
   var button2data, imgData;
 
+  var lat,lng;
+  var savedMarkers = {};
+
   
   //Set the initial template data
   setDetectedDevices (0);
@@ -135,6 +138,16 @@ Connichiwa.onLoad (function () {
    });*/
 
 
+  // OnMessage for GoogleMaps
+  // Broadcast marker's lat and lng to other connected devices
+  Connichiwa.onMessage('broadcastLatLng', function (message) {
+    lat = message.myLat;
+    lng = message.myLng;
+    alert(lat + '_' + lng);
+  });
+
+
+
 
   /*onMessage functions for Tests 1-5*/
   // TEST 1 - OnMessage for Button Click
@@ -227,6 +240,12 @@ Connichiwa.onLoad (function () {
 
 });
 
+function initMap () {
+  map = new google.maps.Map (document.getElementById ('map'), {
+    zoom: 4,
+    center: {lat: -25.363882, lng: 131.044922}
+  });
+}
 
 function pluralize (word, number) {
   if (number === 1) return word;

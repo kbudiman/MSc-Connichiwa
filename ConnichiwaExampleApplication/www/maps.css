@@ -55,8 +55,8 @@ html, body {
 
 #floating-panel {
     position: absolute;
-    top: 90px;
-    left: 25%;
+    top: 85px;
+    left: 15%;
     z-index: 5;
     background-color: #fff;
     padding: 5px;
@@ -67,8 +67,3 @@ html, body {
     padding-left: 10px;
 }
 
-.customBox {
-    background: yellow;
-    border: 1px solid black;
-    position: absolute;
-}
