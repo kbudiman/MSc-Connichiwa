@@ -26,7 +26,7 @@ function initMap() {
 
   // Initialize the GoogleMap
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -33.8688, lng: 151.2195},
+    center: {lat: 51.51825, lng: -0.119648},
     zoom: 13,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
@@ -113,6 +113,7 @@ function initMap() {
     map.fitBounds(bounds);
   });
 }
+
 
 
 
@@ -214,10 +215,9 @@ function createInfoWindow(latLng, map, lat, lng, placeName) {
       ,pixelOffset: new google.maps.Size(-10, 0)
       ,closeBoxURL: ""
       ,isHidden: false
-      ,pane: "mapPane"
-      ,enableEventPropagation: true
-      ,zIndex: 9999
-      ,optimized: true
+      ,pane: "floatPane"
+      ,enableEventPropagation: false
+      ,position: 'absolute'
     };
 
     var ibLabel = new InfoBox(myOptions);
@@ -231,6 +231,7 @@ function createInfoWindow(latLng, map, lat, lng, placeName) {
 
     marker.addListener('click', function() {
       ibLabel.open(map, marker);
+      //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
     });
 
     ibLabel.open(map, marker);
@@ -266,8 +267,6 @@ function placeMarkerAndPanTo (latLng, map, lat, lng, placeName) {
       map: map,
       icon: image,
       id: 'marker_' + markerId,
-      zIndex: -999,
-      optimized: false
     });
 
 
@@ -328,11 +327,11 @@ function removeMarker(marker, markerId) {
  * Binds right click event to given marker and invokes a callback function that will remove the marker from map.
  * @param {!google.maps.Marker} marker A google.maps.Marker instance that the handler will binded.
  */
+
 var bindMarkerEvents = function(marker, map, lat, lng) {
   google.maps.event.addListener(marker, "click", function (point) {
 
     var activeLat, activeLng;
-
     // Call up the markers
     //createInfoWindow(map, lat, lng);
 
@@ -344,6 +343,9 @@ var bindMarkerEvents = function(marker, map, lat, lng) {
 
     activeLat = point.latLng.lat();
     activeLng = point.latLng.lng();
+
+
+    this.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 
     //var markerId = getMarkerUniqueId(point.latLng.lat(), point.latLng.lng()); // get marker id by using clicked point's coordinate
     //Connichiwa.broadcast('broadcastLatLng', {myLat: lat, myLng: lng});

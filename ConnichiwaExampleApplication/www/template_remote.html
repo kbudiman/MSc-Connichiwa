@@ -1,5 +1,9 @@
 <template name="remote">
+  <!-- Allows fullscreen mode from the Homescreen -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
+  <!-- Sets the color of the text/battery, wireless icons etc -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <body>
 
   <div class="center">
@@ -60,7 +64,7 @@
 
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpDWib2HUkcAdUgBE3SGnCXHaQsw-aX8w&libraries=places&callback=initMap"
           ></script>
-  <script type="text/javascript" src="infobox.js" async defer></script>
+  <script type="text/javascript" src="infobox.js" defer></script>
 
   <!--script>
     var map;

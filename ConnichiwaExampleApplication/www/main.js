@@ -241,7 +241,7 @@ function initMap () {
     zoom: 13,
     draggable: false,
     scrollwheel: false,
-    center: {lat: -33.8688, lng: 151.2195},
+    center: {lat: 51.51825, lng: -0.119648},
     panControl: false,
     maxZoom: 13,
     minZoom: 13
@@ -328,10 +328,8 @@ function createInfoWindow(map, lat, lng, placeName) {
       , pixelOffset: new google.maps.Size (-10, 0)
       , closeBoxURL: ""
       , isHidden: false
-      , pane: "mapPane"
+      , pane: "floatPane"
       , enableEventPropagation: true
-      , zIndex: 9999
-      , optimized: true
     };
 
     var ibLabel = new InfoBox(myOptions);
@@ -340,6 +338,7 @@ function createInfoWindow(map, lat, lng, placeName) {
 
     marker.addListener('click', function() {
       ibLabel.open(map, marker);
+      ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
     });
 
     ibLabel.open(map, marker);
