@@ -49,6 +49,7 @@ Connichiwa.onLoad (function () {
       //device.loadScript ("maps.js");
       device.loadScript("remoteDeviceMap.js");
       device.loadCSS("maps.css");
+      //device.loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBpDWib2HUkcAdUgBE3SGnCXHaQsw-aX8w&libraries=places&callback=initMap");
 
       //Load CSS and insert the remote template into the new device. The remote
       //template shows the devices current distance (also see "deviceDistanceChanged")
@@ -71,6 +72,7 @@ Connichiwa.onLoad (function () {
         target: "body",
         dataSource: device.getIdentifier ()
       });
+
 
 
       //device.loadScript ("/connichiwaJStest.js");
@@ -259,16 +261,16 @@ Connichiwa.onMessage('shareMarker', function (message) {
   var markerId = getMarkerUniqueId(lat,lng);
 
   if(!savedMarkers[markerId]) {
-  var marker = new google.maps.Marker ({
-    position: latLng,
-    map: map,
-    icon: image,
-    id: 'marker_' + markerId
-  });
+    var marker = new google.maps.Marker ({
+      position: latLng,
+      map: map,
+      icon: image,
+      id: 'marker_' + markerId
+    });
 
-  savedMarkers[markerId] = marker;
+    savedMarkers[markerId] = marker;
 
-  createInfoWindow(map, lat, lng, placeName);
+    createInfoWindow(map, lat, lng, placeName);
   }
 });
 
@@ -288,8 +290,13 @@ Connichiwa.onMessage('deleteMarker', function (message) {
   var delMarkerId = getMarkerUniqueId(message.remoteMarkerLat, message.remoteMarkerLng);
   var delMarker = savedMarkers[delMarkerId];
 
+
   delMarker.setMap(null);
-  delete delMarker;
+  delete savedMarkers[delMarkerId];
+
+  //Delete infoBox
+  infoWindows[delMarkerId].close();
+  delete infoWindows[delMarkerId];
 });
 
 var getMarkerUniqueId= function(lat, lng) {
@@ -302,17 +309,49 @@ function createInfoWindow(map, lat, lng, placeName) {
   var contentString = placeName;
 
 
-  var infowindow = new google.maps.InfoWindow({
+  /*var infowindow = new google.maps.InfoWindow({
     content: contentString
-  });
+  });*/
 
-  infoWindows[markerId] = infowindow;
+  if(!infoWindows[markerId]) {
+    var myOptions = {
+      content: contentString
+      , boxStyle: {
+        border: "1px solid black"
+        , textAlign: "center"
+        , fontSize: "8pt"
+        //,width: "75px"
+        , background: "yellow"
+        , opacity: 0.75
+      }
+      , disableAutoPan: true
+      , pixelOffset: new google.maps.Size (-10, 0)
+      , closeBoxURL: ""
+      , isHidden: false
+      , pane: "mapPane"
+      , enableEventPropagation: true
+      , zIndex: 9999
+      , optimized: true
+    };
+
+    var ibLabel = new InfoBox(myOptions);
+
+    infoWindows[markerId] = ibLabel;
+
+    marker.addListener('click', function() {
+      ibLabel.open(map, marker);
+    });
+
+    ibLabel.open(map, marker);
+  }
+
+  /*infoWindows[markerId] = infowindow;
 
   marker.addListener('click', function() {
     infowindow.open(map, marker);
   });
 
-  infowindow.open(map, marker);
+  infowindow.open(map, marker);*/
 }
 
 

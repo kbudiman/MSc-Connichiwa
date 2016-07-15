@@ -127,6 +127,7 @@ Connichiwa.onMessage('shareMarker', function (message) {
   lng = message.remoteLng;
   localPlaceName = message.remoteName;
   placeMarkerAndPanTo(message.remotePosition, map, lat, lng, localPlaceName);
+  createInfoWindow(message.remotePosition, map, lat, lng, localPlaceName);
 });
 
 Connichiwa.onMessage('anotateMarker', function (message) {
@@ -146,6 +147,7 @@ Connichiwa.onMessage('deleteMarker', function (message) {
   var delMarkerId = getMarkerUniqueId(message.remoteMarkerLat, message.remoteMarkerLng);
   var delMarker = savedRemoteMarkers[delMarkerId];
 
+
   delete savedRemoteMarkers[delMarkerId];
 });
 
@@ -153,7 +155,9 @@ Connichiwa.onMessage('deleteMarker', function (message) {
 /* Buttons' Functions */
 function shareMarker() {
   placeMarkerAndPanTo (markerLatLng, map, lat, lng, localPlaceName);
+  createInfoWindow(markerLatLng, map, lat, lng, localPlaceName);
   Connichiwa.broadcast ('shareMarker', {remotePosition: markerLatLng, remoteLat: lat, remoteLng: lng, remoteName: localPlaceName});
+  localMarker.setMap(null);
   $('#floating-panel').hide();
 }
 
@@ -188,23 +192,55 @@ function promptHoursAndOrder(lat, lng) {
 
 }
 
-function createInfoWindow(map, lat, lng, placeName) {
+function createInfoWindow(latLng, map, lat, lng, placeName) {
   var markerId = getMarkerUniqueId(lat, lng);
   var marker = savedRemoteMarkers[markerId];
   var contentString = placeName;
 
+  //alert('infoWindow' + latLng);
 
-  var infowindow = new google.maps.InfoWindow({
-    content: contentString
-  });
+  if(!infoWindows[markerId]) {
+    var myOptions = {
+      content: contentString
+      ,boxStyle: {
+        border: "1px solid black"
+        ,textAlign: "center"
+        ,fontSize: "8pt"
+        //,width: "75px"
+        ,background: "yellow"
+        ,opacity: 0.75
+      }
+      ,disableAutoPan: true
+      ,pixelOffset: new google.maps.Size(-10, 0)
+      ,closeBoxURL: ""
+      ,isHidden: false
+      ,pane: "mapPane"
+      ,enableEventPropagation: true
+      ,zIndex: 9999
+      ,optimized: true
+    };
 
-  infoWindows[markerId] = infowindow;
+    var ibLabel = new InfoBox(myOptions);
+    //ibLabel.open(map);
 
-  marker.addListener('click', function() {
+    /*var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });*/
+
+    infoWindows[markerId] = ibLabel;
+
+    marker.addListener('click', function() {
+      ibLabel.open(map, marker);
+    });
+
+    ibLabel.open(map, marker);
+  }
+
+  /*marker.addListener('click', function() {
     infowindow.open(map, marker);
   });
 
-  infowindow.open(map, marker);
+  infowindow.open(map, marker);*/
 
 }
 
@@ -229,7 +265,9 @@ function placeMarkerAndPanTo (latLng, map, lat, lng, placeName) {
       position: latLng,
       map: map,
       icon: image,
-      id: 'marker_' + markerId
+      id: 'marker_' + markerId,
+      zIndex: -999,
+      optimized: false
     });
 
 
@@ -248,8 +286,6 @@ function placeMarkerAndPanTo (latLng, map, lat, lng, placeName) {
     placeNames[markerId] = placeName;
     savedMarkers[markerId] = marker;
     savedRemoteMarkers[markerId] = marker;
-
-    createInfoWindow(map, lat, lng, placeName);
   }
 
 
@@ -275,6 +311,10 @@ function delMarkerLatLng(lat, lng) {
 
   delMarker.setMap(null);
   delete savedMarkers[delMarkerId];
+
+  //Delete infoBox
+  infoWindows[delMarkerId].close();
+  delete infoWindows[delMarkerId];
 }
 
 //To Be DELETED
