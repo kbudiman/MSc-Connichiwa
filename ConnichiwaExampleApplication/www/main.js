@@ -1,7 +1,9 @@
 var map;
+var deviceIndex;
 var lat,lng, latLng, placeName;
 var savedMarkers = {};
-var infoWindows ={};
+var infoWindows = {};
+var deviceCounter = 0;
 
 //All Connichiwa-related stuff should always be done in Connichiwa.onLoad()
 Connichiwa.onLoad (function () {
@@ -10,7 +12,6 @@ Connichiwa.onLoad (function () {
   CWTemplates.insert ("master", {target: "body"});
 
   var devices = []; // Array to store connected devices
-  var deviceCounter;
   var button2data, imgData;
 
 
@@ -31,7 +32,6 @@ Connichiwa.onLoad (function () {
     Connichiwa.autoLoadScripts = ["/main.js"];
     Connichiwa.autoConnect = true;
 
-    deviceCounter = 0;
 
     Connichiwa.on ("deviceConnected", function (device) {
 
@@ -41,8 +41,8 @@ Connichiwa.onLoad (function () {
 
       devices.push(device);
 
-      devices[deviceCounter].insert ("Device" + connectedDevices + ": "+ "<b>I am connected!</b>");
-
+      devices[deviceCounter].insert ("Device" + deviceCounter + ": "+ "<b>I am connected!</b>");
+      deviceCounter += 1;
 
 
       //Load custom GoogleMaps .JS
@@ -74,12 +74,9 @@ Connichiwa.onLoad (function () {
       });
 
 
-
       //device.loadScript ("/connichiwaJStest.js");
       //device.loadScript ("/camera.js");
 
-
-      deviceCounter += 1;
 
       //button2data = {button2msg: 'clicked2!'};
       //Connichiwa.broadcast("button2Respond", button2data);
@@ -125,6 +122,7 @@ Connichiwa.onLoad (function () {
 
   Connichiwa.on("deviceDisconnected", function () {
     //Decrease connected devices
+    deviceCounter -= 1;
     var connectedDevices = CWTemplates.get ('devices_connected_count');
     setConnectedDevices (connectedDevices - 1);
 
@@ -226,12 +224,183 @@ Connichiwa.onLoad (function () {
     }
   }
 
-  function log(data){
-    var console = $('#console');
-    var msg = $('<div>');
+  // OnMessage for GoogleMaps
+  // Broadcast marker's lat and lng to other connected devices
+  Connichiwa.onMessage('shareMarker', function (message) {
+    lat = message.remoteLat;
+    lng = message.remoteLng;
+    latLng = message.remotePosition;
+    placeName = message.remoteName;
 
-    msg.html (JSON.stringify(data));
-    console.append(msg);
+    var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+    var markerId = getMarkerUniqueId(lat,lng);
+
+    if(!savedMarkers[markerId]) {
+      var marker = new google.maps.Marker ({
+        position: latLng,
+        map: map,
+        icon: image,
+        id: 'marker_' + markerId
+      });
+
+      savedMarkers[markerId] = marker;
+
+      createInfoWindow(map, lat, lng, placeName);
+    }
+
+    log(timeStamp(), message._source, 'Share');
+  });
+
+
+  Connichiwa.onMessage('anotateMarker', function (message) {
+    lat = message.remoteMarkerLat;
+    lng = message.remoteMarkerLng;
+
+    var markerId = getMarkerUniqueId(lat, lng);
+    infoWindows[markerId].setContent(message.remotePrompt);
+
+    //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
+    log(timeStamp(), message._source, 'Annotate');
+  });
+
+  Connichiwa.onMessage('deleteMarker', function (message) {
+    //removeMarker(message.remoteMarker, message.remoteMarkerId);
+    var delMarkerId = getMarkerUniqueId(message.remoteMarkerLat, message.remoteMarkerLng);
+    var delMarker = savedMarkers[delMarkerId];
+
+
+    delMarker.setMap(null);
+    delete savedMarkers[delMarkerId];
+
+    //Delete infoBox
+    infoWindows[delMarkerId].close();
+    delete infoWindows[delMarkerId];
+
+    log(timeStamp(), message._source, 'Delete');
+  });
+
+  // Log the X, Y touch coordinates
+  Connichiwa.onMessage('broadcastTouch', function (message) {
+
+    $('#consoleTest').append(timeStamp() + ', Device ' + getDeviceIndex(message._source) + ', X: ,' + message.xCoor + ' Y: ,' + message.yCoor + "<br/>");
+  });
+
+  // Log the Zoom In or Out events
+  Connichiwa.onMessage('broadcastZoom', function (message) {
+
+    $('#consoleTest').append(timeStamp() + ', Device ' + getDeviceIndex(message._source) + ', ' + message.zoom + "<br/>");
+  });
+
+  var getMarkerUniqueId= function(lat, lng) {
+    return lat + '_' + lng;
+  };
+
+  function log(timestamp, deviceId, command){
+
+    var console = $('#consoleTest');
+    var deviceIndex;
+    //var msg = $('<div>');
+
+    //msg.html (JSON.stringify(data));
+    console.append('Time (ms): ' + timestamp + ', Device ' + getDeviceIndex(deviceId) + ', Command: ' + command + "<br/>");
+  }
+
+  function getDeviceIndex(deviceId) {
+
+    var deviceIdentifier;
+    for(var i = 0; i < devices.length; i++) {
+
+      deviceIdentifier = devices[i].getIdentifier();
+
+      if(deviceIdentifier == deviceId) {
+        return i;
+      }
+
+    }
+
+
+  }
+    /**
+     * Return a timestamp with the format "m/d/yy h:MM:ss TT"
+     * @type {Date}
+     */
+
+  function timeStamp() {
+
+    var now = new Date();
+
+    // Create an array with the current hour, minute and second
+    var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
+
+    // Determine AM or PM suffix based on the hour
+    var suffix = ( time[0] < 12 ) ? "AM" : "PM";
+
+    // Convert hour from military time
+    //time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
+
+    // If hour is 0, set it to 12
+    time[0] = time[0] || 12;
+
+    // If seconds and minutes are less than 10, add a zero
+    for ( var i = 1; i < 3; i++ ) {
+      if ( time[i] < 10 ) {
+        time[i] = "0" + time[i];
+      }
+    }
+
+    // Return the formatted string
+    return time.join(":");
+  }
+
+
+  function createInfoWindow(map, lat, lng, placeName) {
+    var markerId = getMarkerUniqueId(lat, lng);
+    var marker = savedMarkers[markerId];
+    var contentString = placeName;
+
+
+    /*var infowindow = new google.maps.InfoWindow({
+     content: contentString
+     });*/
+
+    if(!infoWindows[markerId]) {
+      var myOptions = {
+        content: contentString
+        , boxStyle: {
+          border: "1px solid black"
+          , textAlign: "center"
+          , fontSize: "8pt"
+          //,width: "75px"
+          , background: "yellow"
+          , opacity: 0.75
+        }
+        , disableAutoPan: true
+        , pixelOffset: new google.maps.Size (-10, 0)
+        , closeBoxURL: ""
+        , isHidden: false
+        , pane: "floatPane"
+        , enableEventPropagation: true
+      };
+
+      var ibLabel = new InfoBox(myOptions);
+
+      infoWindows[markerId] = ibLabel;
+
+      marker.addListener('click', function() {
+        ibLabel.open(map, marker);
+        ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+      });
+
+      ibLabel.open(map, marker);
+    }
+
+    /*infoWindows[markerId] = infowindow;
+
+     marker.addListener('click', function() {
+     infowindow.open(map, marker);
+     });
+
+     infowindow.open(map, marker);*/
   }
 
 });
@@ -247,112 +416,6 @@ function initMap () {
     minZoom: 13
   });
 }
-
-
-// OnMessage for GoogleMaps
-// Broadcast marker's lat and lng to other connected devices
-Connichiwa.onMessage('shareMarker', function (message) {
-  lat = message.remoteLat;
-  lng = message.remoteLng;
-  latLng = message.remotePosition;
-  placeName = message.remoteName;
-
-  var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
-  var markerId = getMarkerUniqueId(lat,lng);
-
-  if(!savedMarkers[markerId]) {
-    var marker = new google.maps.Marker ({
-      position: latLng,
-      map: map,
-      icon: image,
-      id: 'marker_' + markerId
-    });
-
-    savedMarkers[markerId] = marker;
-
-    createInfoWindow(map, lat, lng, placeName);
-  }
-});
-
-
-Connichiwa.onMessage('anotateMarker', function (message) {
-  lat = message.remoteMarkerLat;
-  lng = message.remoteMarkerLng;
-
-  var markerId = getMarkerUniqueId(lat, lng);
-  infoWindows[markerId].setContent(message.remotePrompt);
-
-  //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
-});
-
-Connichiwa.onMessage('deleteMarker', function (message) {
-  //removeMarker(message.remoteMarker, message.remoteMarkerId);
-  var delMarkerId = getMarkerUniqueId(message.remoteMarkerLat, message.remoteMarkerLng);
-  var delMarker = savedMarkers[delMarkerId];
-
-
-  delMarker.setMap(null);
-  delete savedMarkers[delMarkerId];
-
-  //Delete infoBox
-  infoWindows[delMarkerId].close();
-  delete infoWindows[delMarkerId];
-});
-
-var getMarkerUniqueId= function(lat, lng) {
-  return lat + '_' + lng;
-};
-
-function createInfoWindow(map, lat, lng, placeName) {
-  var markerId = getMarkerUniqueId(lat, lng);
-  var marker = savedMarkers[markerId];
-  var contentString = placeName;
-
-
-  /*var infowindow = new google.maps.InfoWindow({
-    content: contentString
-  });*/
-
-  if(!infoWindows[markerId]) {
-    var myOptions = {
-      content: contentString
-      , boxStyle: {
-        border: "1px solid black"
-        , textAlign: "center"
-        , fontSize: "8pt"
-        //,width: "75px"
-        , background: "yellow"
-        , opacity: 0.75
-      }
-      , disableAutoPan: true
-      , pixelOffset: new google.maps.Size (-10, 0)
-      , closeBoxURL: ""
-      , isHidden: false
-      , pane: "floatPane"
-      , enableEventPropagation: true
-    };
-
-    var ibLabel = new InfoBox(myOptions);
-
-    infoWindows[markerId] = ibLabel;
-
-    marker.addListener('click', function() {
-      ibLabel.open(map, marker);
-      ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
-    });
-
-    ibLabel.open(map, marker);
-  }
-
-  /*infoWindows[markerId] = infowindow;
-
-  marker.addListener('click', function() {
-    infowindow.open(map, marker);
-  });
-
-  infowindow.open(map, marker);*/
-}
-
 
 
 function pluralize (word, number) {

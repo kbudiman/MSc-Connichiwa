@@ -20,7 +20,8 @@ var savedMarkers = {};
 var savedRemoteMarkers = {};
 var infoWindows = {}
 var placeNames = {};
-
+var timestamp;
+var command;
 
 function initMap() {
 
@@ -353,7 +354,38 @@ var bindMarkerEvents = function(marker, map, lat, lng) {
     //var marker = savedMarkers[markerId]; // find marker
     //removeMarker(marker, markerId); // remove it
   });
+
 };
+
+$(function() {
+  var $log = $("#log");
+
+  function updateLog(x, y) {
+    //$log.html('X: '+ x +'; Y: '+ y);
+    Connichiwa.broadcast('broadcastTouch', {xCoor: x, yCoor: y});
+  }
+
+  document.addEventListener('touchstart', function(e) {
+    updateLog(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+  }, false);
+
+  document.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    updateLog(e.targetTouches[0].pageX, e.targetTouches[0].pageY);
+  }, false);
+
+  document.addEventListener('gestureend', function(e) {
+    if (e.scale < 1.0) {
+      // User moved fingers closer together
+      Connichiwa.broadcast('broadcastZoom', {zoom: 'Zoom In'});
+    } else if (e.scale > 1.0) {
+      // User moved fingers further apart
+      Connichiwa.broadcast('broadcastZoom', {zoom: 'Zoom Out'});
+    }
+  }, false);
+});
+
+
 
 function closePanel () {
   $('#floating-panel').hide();
