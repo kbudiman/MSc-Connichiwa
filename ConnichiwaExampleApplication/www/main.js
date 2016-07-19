@@ -248,7 +248,7 @@ Connichiwa.onLoad (function () {
       createInfoWindow(map, lat, lng, placeName);
     }
 
-    log(timeStamp(), message._source, 'Share');
+    log(message._source, 'Share');
   });
 
 
@@ -260,7 +260,7 @@ Connichiwa.onLoad (function () {
     infoWindows[markerId].setContent(message.remotePrompt);
 
     //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
-    log(timeStamp(), message._source, 'Annotate');
+    log(message._source, 'Annotate');
   });
 
   Connichiwa.onMessage('deleteMarker', function (message) {
@@ -276,33 +276,74 @@ Connichiwa.onLoad (function () {
     infoWindows[delMarkerId].close();
     delete infoWindows[delMarkerId];
 
-    log(timeStamp(), message._source, 'Delete');
+    log(message._source, 'Delete');
   });
 
   // Log the X, Y touch coordinates
   Connichiwa.onMessage('broadcastTouch', function (message) {
 
-    $('#consoleTest').append(timeStamp() + ', Device ' + getDeviceIndex(message._source) + ', X: ,' + message.xCoor + ' Y: ,' + message.yCoor + "<br/>");
+    //$('#consoleTest').append(timeStamp() + ', Device ' + getDeviceIndex(message._source) + ', X: ,' + message.xCoor + ' Y: ,' + message.yCoor + "<br/>");
+    logCoor(message._source, message.xCoor, message.yCoor);
   });
 
   // Log the Zoom In or Out events
   Connichiwa.onMessage('broadcastZoom', function (message) {
 
-    $('#consoleTest').append(timeStamp() + ', Device ' + getDeviceIndex(message._source) + ', ' + message.zoom + "<br/>");
+    log(message._source, message.zoom);
+
   });
 
   var getMarkerUniqueId= function(lat, lng) {
     return lat + '_' + lng;
   };
 
-  function log(timestamp, deviceId, command){
+  function logCoor(deviceId, x, y) {
 
-    var console = $('#consoleTest');
+    var d = new Date();
+    var data = {
+      line: d.toLocaleString()+ ', Device ' + getDeviceIndex(deviceId) + ', X: ' + x + ', Y: ' + y //content will be appended to the file
+
+    };
+    $.ajax({
+      type: "POST",
+      url: "http://192.168.1.102:3002/log",
+      data: data,
+      success: function(result) {
+        console.log('success', result);
+      },
+      error: function(err) {
+        console.log('error', err);
+      }
+    });
+  }
+
+  function log(deviceId, command){
+
+    //var console = $('#consoleTest');
     var deviceIndex;
     //var msg = $('<div>');
 
+
+
+    var d = new Date();
+    var data = {
+      line: d.toLocaleString()+ ', Device ' + getDeviceIndex(deviceId) + ', Command: ' + command //content will be appended to the file
+
+    };
+    $.ajax({
+      type: "POST",
+      url: "http://192.168.1.102:3002/log",
+      data: data,
+      success: function(result) {
+        console.log('success', result);
+      },
+      error: function(err) {
+        console.log('error', err);
+      }
+    });
+
     //msg.html (JSON.stringify(data));
-    console.append('Time (ms): ' + timestamp + ', Device ' + getDeviceIndex(deviceId) + ', Command: ' + command + "<br/>");
+    //console.append('Time (ms): ' + timestamp + ', Device ' + getDeviceIndex(deviceId) + ', Command: ' + command + "<br/>");
   }
 
   function getDeviceIndex(deviceId) {
@@ -406,6 +447,11 @@ Connichiwa.onLoad (function () {
 });
 
 function initMap () {
+
+  $.getScript('infobox.js', function(data, status, jxhr){
+    console.log('infobox JS loaded. Status: ', status);
+  });
+
   map = new google.maps.Map (document.getElementById ('map'), {
     zoom: 13,
     draggable: false,

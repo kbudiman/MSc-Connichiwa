@@ -25,6 +25,11 @@ var command;
 
 function initMap() {
 
+  $.getScript('infobox.js', function(data, status, jxhr){
+    console.log('infobox JS loaded. Status: ', status);
+  });
+
+
   // Initialize the GoogleMap
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 51.51825, lng: -0.119648},
@@ -130,6 +135,7 @@ Connichiwa.onMessage('shareMarker', function (message) {
   localPlaceName = message.remoteName;
   placeMarkerAndPanTo(message.remotePosition, map, lat, lng, localPlaceName);
   createInfoWindow(message.remotePosition, map, lat, lng, localPlaceName);
+
 });
 
 Connichiwa.onMessage('anotateMarker', function (message) {
