@@ -248,7 +248,7 @@ Connichiwa.onLoad (function () {
       createInfoWindow(map, lat, lng, placeName);
     }
 
-    log(message._source, 'Share');
+    log(message._source, 'Share', placeName);
   });
 
 
@@ -260,7 +260,7 @@ Connichiwa.onLoad (function () {
     infoWindows[markerId].setContent(message.remotePrompt);
 
     //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
-    log(message._source, 'Annotate');
+    log(message._source, 'Annotate', message.remotePrompt);
   });
 
   Connichiwa.onMessage('deleteMarker', function (message) {
@@ -276,7 +276,7 @@ Connichiwa.onLoad (function () {
     infoWindows[delMarkerId].close();
     delete infoWindows[delMarkerId];
 
-    log(message._source, 'Delete');
+    log(message._source, 'Delete', message.remoteName);
   });
 
   // Log the X, Y touch coordinates
@@ -289,8 +289,16 @@ Connichiwa.onLoad (function () {
   // Log the Zoom In or Out events
   Connichiwa.onMessage('broadcastZoom', function (message) {
 
-    log(message._source, message.zoom);
+    log(message._source, message.zoom, 'none');
 
+  });
+
+  Connichiwa.onMessage('searchedInput', function(message) {
+    log(message._source, 'Searched Input', message.searchedPlace);
+  });
+
+  Connichiwa.onMessage('clickUnsavedMarker', function(message) {
+    log(message._source, 'Clicked (Unsaved) Marker', message.unsavedPlace);
   });
 
   var getMarkerUniqueId= function(lat, lng) {
@@ -301,7 +309,7 @@ Connichiwa.onLoad (function () {
 
     var d = new Date();
     var data = {
-      line: d.toLocaleString()+ ', Device ' + getDeviceIndex(deviceId) + ', X: ' + x + ', Y: ' + y //content will be appended to the file
+      line: d.toLocaleString()+ ', Device ' + getDeviceIndex(deviceId) + ', Command: Touch' + ', X: ' + x + ', Y: ' + y //content will be appended to the file
 
     };
     $.ajax({
@@ -317,7 +325,7 @@ Connichiwa.onLoad (function () {
     });
   }
 
-  function log(deviceId, command){
+  function log(deviceId, command, location){
 
     //var console = $('#consoleTest');
     var deviceIndex;
@@ -327,7 +335,7 @@ Connichiwa.onLoad (function () {
 
     var d = new Date();
     var data = {
-      line: d.toLocaleString()+ ', Device ' + getDeviceIndex(deviceId) + ', Command: ' + command //content will be appended to the file
+      line: d.toLocaleString()+ ', Device ' + getDeviceIndex(deviceId) + ', Command: ' + command + ', Location: ' + location //content will be appended to the file
 
     };
     $.ajax({

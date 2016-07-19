@@ -41,6 +41,7 @@ function initMap() {
 
   // Create the search box and link it to the UI element.
   var input = document.getElementById('pac-input');
+
   var searchBox = new google.maps.places.SearchBox(input);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
@@ -58,6 +59,9 @@ function initMap() {
     if (places.length == 0) {
       return;
     }
+
+    // LOGGING WHEN THEY CLICK ON PLACES ON SEARCH INPUT
+    Connichiwa.broadcast('searchedInput', {searchedPlace: places[0].name});
 
 
     markers.forEach(function(marker) {
@@ -86,7 +90,7 @@ function initMap() {
         position: place.geometry.location
       });
 
-      localPlaceName = localMarker.title;
+      //localPlaceName = localMarker.title;
 
       // Click event for each marker (to trigger small dashboard)
       /*marker.addListener('click', function (e) {
@@ -105,6 +109,11 @@ function initMap() {
           markerLatLng = e.latLng;
           lat = e.latLng.lat(); // lat of clicked point;
           lng = e.latLng.lng(); // lng of clicked point;
+
+          localPlaceName = localMarker.title;
+
+          // LOGGING: When they click on a Unsaved Marker
+          Connichiwa.broadcast('clickUnsavedMarker', {unsavedPlace: localPlaceName});
         });
       });
 
@@ -177,7 +186,7 @@ function annotateMarker() {
 
 function deleteMarker() {
   delMarkerLatLng(lat, lng);
-  Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng});
+  Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remoteName: localPlaceName});
   $('#floating-panel').hide();
 }
 
@@ -195,7 +204,7 @@ function promptHoursAndOrder(lat, lng) {
   }
   else {
     infoWindows[markerId].setContent(contentString);
-    Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString});
+    Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName});
   }
 
 }
