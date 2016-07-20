@@ -18,7 +18,9 @@ var markerLatLng;
 var lat, lng;
 var savedMarkers = {};
 var savedRemoteMarkers = {};
-var infoWindows = {}
+var infoWindows = {};
+var annotations = {};
+var remoteAnnotations = {};
 var placeNames = {};
 var timestamp;
 var command;
@@ -101,7 +103,9 @@ function initMap() {
       markers.push(localMarker);
       markers.forEach(function(marker) {
         marker.addListener('click', function (e) {
+
           $('#floating-panel').show();
+
           $('#btn_share').show();
           $('#btn_annotate').hide();
           $('#btn_delete').hide();
@@ -111,6 +115,7 @@ function initMap() {
           lng = e.latLng.lng(); // lng of clicked point;
 
           localPlaceName = localMarker.title;
+
 
           // LOGGING: When they click on a Unsaved Marker
           Connichiwa.broadcast('clickUnsavedMarker', {unsavedPlace: localPlaceName});
@@ -128,8 +133,6 @@ function initMap() {
     map.fitBounds(bounds);
   });
 }
-
-
 
 
 // Broadcast marker's lat and lng to other connected devices
@@ -151,10 +154,11 @@ Connichiwa.onMessage('anotateMarker', function (message) {
   lat = message.remoteMarkerLat;
   lng = message.remoteMarkerLng;
 
-  var markerId = getMarkerUniqueId(lat, lng);
-  infoWindows[markerId].setContent(message.remotePrompt);
 
-  //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
+  var markerId = getMarkerUniqueId(lat, lng);
+  var marker = savedRemoteMarkers[markerId];
+
+  createAnnotateInfoWindow(markerId, marker, message.remoteVisitDur, message.remoteVisitOrder);
 });
 
 Connichiwa.onMessage('deleteMarker', function (message) {
@@ -192,10 +196,14 @@ function deleteMarker() {
 
 function promptHoursAndOrder(lat, lng) {
   var markerId = getMarkerUniqueId(lat, lng);
+  var marker = savedRemoteMarkers[markerId];
   var contentString;
   var order;
 
-  order = prompt('Please enter the Visit Order and Duration (in hours) - e.g. 1, 0.5');
+  var visitOrder;
+  var visitDuration;
+
+  /*order = prompt('Please enter the Visit Order and Duration (in hours) - e.g. 1, 0.5');
   contentString = placeNames[markerId] + ' ' + order;
 
   if(!order) {
@@ -205,8 +213,107 @@ function promptHoursAndOrder(lat, lng) {
   else {
     infoWindows[markerId].setContent(contentString);
     Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName});
+  }*/
+
+  $('#annotate-panel').show();
+
+  $('#btn_annotateEnter').click(function (e) {
+
+    visitOrder = $('#visitorder').val();
+    visitDuration = $('#visitduration').val();
+
+    if(!visitOrder || !visitDuration) {
+      alert('Please type the Visit Order and Duration.');
+    }
+    else {
+      createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder);
+
+      Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName, remoteVisitOrder: visitOrder, remoteVisitDur: visitDuration});
+
+      $('#annotate-panel').hide();
+    }
+  });
+
+  $('#btn_annotateCancel').click(function(e) {
+    $('#annotate-panel').hide();
+  });
+}
+
+function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
+  if(infoWindows[markerId] && !annotations[markerId]) {
+    var myOrderOptions = {
+      content: '#' + visitOrder
+      ,boxStyle: {
+        border: "1px solid white"
+        ,textAlign: "center"
+        ,fontSize: "8pt"
+        ,width: "20px"
+        ,background: "red"
+        ,opacity: 0.75
+        ,color: "white"
+      }
+      ,disableAutoPan: true
+      ,pixelOffset: new google.maps.Size(7, -45)
+      ,closeBoxURL: ""
+      ,isHidden: false
+      ,pane: "floatPane"
+      ,enableEventPropagation: false
+      ,position: 'absolute'
+    };
+
+    var myDurOptions = {
+      content: visitDuration + 'hr'
+      ,boxStyle: {
+        border: "1px solid white"
+        ,textAlign: "center"
+        ,fontSize: "8pt"
+        ,width: "30px"
+        ,background: "blue"
+        ,opacity: 0.75
+        ,color: "white"
+      }
+      ,disableAutoPan: true
+      ,pixelOffset: new google.maps.Size(7, -28)
+      ,closeBoxURL: ""
+      ,isHidden: false
+      ,pane: "floatPane"
+      ,enableEventPropagation: false
+      ,position: 'absolute'
+    };
+
+    var ibOrder = new InfoBox(myOrderOptions);
+    var ibDur = new InfoBox(myDurOptions);
+    //ibLabel.open(map);
+
+    /*var infowindow = new google.maps.InfoWindow({
+     content: contentString
+     });*/
+
+    annotations[markerId] = {order: ibOrder, dur: ibDur};
+
+    var myIbOrder = annotations[markerId].order;
+    var myIbDur = annotations[markerId].dur;
+
+
+    marker.addListener('click', function() {
+      myIbOrder.open(map, marker);
+      myIbDur.open(map, marker);
+      //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+    });
+
+    myIbOrder.open(map, marker);
+    myIbDur.open(map, marker);
   }
 
+  else if(infoWindows[markerId] && annotations[markerId]) {
+
+    var myIbOrder = annotations[markerId].order;
+    var myIbDur = annotations[markerId].dur;
+
+    myIbOrder.setContent('#' + visitOrder);
+    myIbDur.setContent(visitDuration + 'hr');
+
+  }
 }
 
 function createInfoWindow(latLng, map, lat, lng, placeName) {
@@ -226,6 +333,7 @@ function createInfoWindow(latLng, map, lat, lng, placeName) {
         //,width: "75px"
         ,background: "yellow"
         ,opacity: 0.75
+        ,maxWidth: "75px"
       }
       ,disableAutoPan: true
       ,pixelOffset: new google.maps.Size(-10, 0)
@@ -330,6 +438,16 @@ function delMarkerLatLng(lat, lng) {
   //Delete infoBox
   infoWindows[delMarkerId].close();
   delete infoWindows[delMarkerId];
+
+  if(annotations[delMarkerId]) {
+    //Delete annotation infoBox
+    var ibOrder = annotations[delMarkerId].order;
+    var ibDur = annotations[delMarkerId].dur;
+    ibOrder.close();
+    ibDur.close();
+    delete annotations[delMarkerId];
+  }
+
 }
 
 //To Be DELETED
@@ -343,7 +461,6 @@ function removeMarker(marker, markerId) {
  * Binds right click event to given marker and invokes a callback function that will remove the marker from map.
  * @param {!google.maps.Marker} marker A google.maps.Marker instance that the handler will binded.
  */
-
 var bindMarkerEvents = function(marker, map, lat, lng) {
   google.maps.event.addListener(marker, "click", function (point) {
 
@@ -369,8 +486,8 @@ var bindMarkerEvents = function(marker, map, lat, lng) {
     //var marker = savedMarkers[markerId]; // find marker
     //removeMarker(marker, markerId); // remove it
   });
-
 };
+
 
 $(function() {
   var $log = $("#log");
@@ -380,9 +497,11 @@ $(function() {
     Connichiwa.broadcast('broadcastTouch', {xCoor: x, yCoor: y});
   }
 
+
   document.addEventListener('touchstart', function(e) {
     updateLog(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
   }, false);
+
 
   document.addEventListener('touchmove', function(e) {
     e.preventDefault();

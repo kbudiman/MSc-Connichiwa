@@ -4,6 +4,11 @@
 
   <!-- Sets the color of the text/battery, wireless icons etc -->
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+ <!-- <link rel="stylesheet" href="jquery-ui.min.css">
+  <script src="external/jquery/jquery.js"></script>
+  <script src="jquery-ui.min.js"></script>-->
+
   <body>
 
   <div class="center">
@@ -56,11 +61,22 @@
   <div id="map"></div>
   <div id="floating-panel" style="display:none">
     <input id="btn_share" onclick="shareMarker();" type=button value="Share">
+
     <input id="btn_annotate" onclick="annotateMarker();" type=button value="Annotate">
     <input id="btn_delete" onclick="deleteMarker();" type=button value="Delete">
     <input onclick="closePanel();" type=button value="Close">
   </div>
 
+  <div id="annotate-panel" style="display:none">
+    <label class="annotateLabel">Visit Order:</label>
+    <input type="text" class="annotateText" id="visitorder" name="visitorder">
+    <br />
+    <label class="annotateLabel">Duration (in hours):</label>
+    <input type="text" class="annotateText" id="visitduration" name="visitduration">
+    <br />
+    <input class="btnInput" id="btn_annotateCancel" onclick="" type=button value="Cancel">
+    <input class="btnInput" id="btn_annotateEnter" type=button value="Enter">
+  </div>
 
   <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 

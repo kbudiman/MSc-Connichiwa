@@ -3,6 +3,7 @@ var deviceIndex;
 var lat,lng, latLng, placeName;
 var savedMarkers = {};
 var infoWindows = {};
+var annotations = {};
 var deviceCounter = 0;
 
 //All Connichiwa-related stuff should always be done in Connichiwa.onLoad()
@@ -66,6 +67,7 @@ Connichiwa.onLoad (function () {
 
 
       device.loadCSS ("styles.css");
+      device.loadCSS("jquery-ui.min.css");
       device.loadTemplates ("template_remote.html");
 
       device.insertTemplate ("remote", {
@@ -257,9 +259,12 @@ Connichiwa.onLoad (function () {
     lng = message.remoteMarkerLng;
 
     var markerId = getMarkerUniqueId(lat, lng);
-    infoWindows[markerId].setContent(message.remotePrompt);
+    //infoWindows[markerId].setContent(message.remotePrompt);
+
+    var marker = savedMarkers[markerId];
 
     //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
+    createAnnotateInfoWindow(markerId, marker, message.remoteVisitDur, message.remoteVisitOrder);
     log(message._source, 'Annotate', message.remotePrompt);
   });
 
@@ -276,8 +281,95 @@ Connichiwa.onLoad (function () {
     infoWindows[delMarkerId].close();
     delete infoWindows[delMarkerId];
 
+    if(annotations[delMarkerId]) {
+      //Delete annotation infoBox
+      var ibOrder = annotations[delMarkerId].order;
+      var ibDur = annotations[delMarkerId].dur;
+      ibOrder.close();
+      ibDur.close();
+      delete annotations[delMarkerId];
+    }
+
     log(message._source, 'Delete', message.remoteName);
   });
+
+
+  function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
+    if(infoWindows[markerId] && !annotations[markerId]) {
+      var myOrderOptions = {
+        content: '#' + visitOrder
+        ,boxStyle: {
+          border: "1px solid white"
+          ,textAlign: "center"
+          ,fontSize: "8pt"
+          ,width: "20px"
+          ,background: "red"
+          ,opacity: 0.75
+          ,color: "white"
+        }
+        ,disableAutoPan: true
+        ,pixelOffset: new google.maps.Size(7, -45)
+        ,closeBoxURL: ""
+        ,isHidden: false
+        ,pane: "floatPane"
+        ,enableEventPropagation: false
+        ,position: 'absolute'
+      };
+
+      var myDurOptions = {
+        content: visitDuration + 'hr'
+        ,boxStyle: {
+          border: "1px solid white"
+          ,textAlign: "center"
+          ,fontSize: "8pt"
+          ,width: "30px"
+          ,background: "blue"
+          ,opacity: 0.75
+          ,color: "white"
+        }
+        ,disableAutoPan: true
+        ,pixelOffset: new google.maps.Size(7, -28)
+        ,closeBoxURL: ""
+        ,isHidden: false
+        ,pane: "floatPane"
+        ,enableEventPropagation: false
+        ,position: 'absolute'
+      };
+
+      var ibOrder = new InfoBox(myOrderOptions);
+      var ibDur = new InfoBox(myDurOptions);
+      //ibLabel.open(map);
+
+      /*var infowindow = new google.maps.InfoWindow({
+       content: contentString
+       });*/
+
+      annotations[markerId] = {order: ibOrder, dur: ibDur};
+
+      var myIbOrder = annotations[markerId].order;
+      var myIbDur = annotations[markerId].dur;
+
+
+      marker.addListener('click', function() {
+        myIbOrder.open(map, marker);
+        myIbDur.open(map, marker);
+        //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+      });
+
+      myIbOrder.open(map, marker);
+      myIbDur.open(map, marker);
+    }
+    else if(infoWindows[markerId] && annotations[markerId]) {
+
+      var myIbOrder = annotations[markerId].order;
+      var myIbDur = annotations[markerId].dur;
+
+      myIbOrder.setContent('#' + visitOrder);
+      myIbDur.setContent(visitDuration + 'hr');
+
+    }
+  }
+
 
   // Log the X, Y touch coordinates
   Connichiwa.onMessage('broadcastTouch', function (message) {
@@ -422,6 +514,7 @@ Connichiwa.onLoad (function () {
           //,width: "75px"
           , background: "yellow"
           , opacity: 0.75
+          , maxWidth: "75px"
         }
         , disableAutoPan: true
         , pixelOffset: new google.maps.Size (-10, 0)
@@ -429,6 +522,7 @@ Connichiwa.onLoad (function () {
         , isHidden: false
         , pane: "floatPane"
         , enableEventPropagation: true
+
       };
 
       var ibLabel = new InfoBox(myOptions);

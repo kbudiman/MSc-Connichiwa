@@ -68,3 +68,45 @@ html, body {
     padding-left: 10px;
 }
 
+#annotate-panel {
+    position: absolute;
+    top: 75px;
+    left: 13%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font-family: 'Roboto','sans-serif';
+    line-height: 40px;
+    padding-left: 10px;
+}
+
+.annotateText {
+    float: right;
+    margin: 5px;
+}
+
+.annotateLabel {
+    float: left;
+}
+
+.btnInput {
+    float: right;
+    margin: 10px;
+}
+/*#btn_annotateEnter {
+    float: right;
+    margin-top: 10px;
+    position: absolute;
+    top: 80px;
+    left: 75%;
+}
+
+#btn_annotateCancel {
+    float: right;
+    margin-top: 10px;
+    position: absolute;
+    top: 80px;
+    left: 45%;
+}*/
