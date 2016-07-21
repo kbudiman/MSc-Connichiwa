@@ -37,6 +37,8 @@ Connichiwa.onLoad (function () {
 
     Connichiwa.on ("deviceConnected", function (device) {
 
+
+
       //Increase connected devices
       var connectedDevices = CWTemplates.get ('devices_connected_count');
       setConnectedDevices (connectedDevices + 1);
@@ -49,8 +51,7 @@ Connichiwa.onLoad (function () {
 
       //Load custom GoogleMaps .JS
       //device.loadScript ("maps.js");
-      device.loadScript("remoteDeviceMap.js");
-      device.loadCSS("maps.css");
+
       //device.loadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyBpDWib2HUkcAdUgBE3SGnCXHaQsw-aX8w&libraries=places&callback=initMap");
 
       //Load CSS and insert the remote template into the new device. The remote
@@ -68,9 +69,11 @@ Connichiwa.onLoad (function () {
 
 
       device.loadCSS ("styles.css");
-      device.loadCSS("jquery-ui.min.css");
       device.loadTemplates ("template_remote.html");
 
+      device.loadCSS("maps.css");
+      device.loadScript("remoteDeviceMap.js");
+      
       device.insertTemplate ("remote", {
         target: "body",
         dataSource: device.getIdentifier ()
@@ -307,11 +310,15 @@ Connichiwa.onLoad (function () {
       //Delete annotation infoBox
       var ibOrder = annotations[delMarkerId].order;
       var ibDur = annotations[delMarkerId].dur;
+
+      var delIbDur;
+      delIbDur = ibDur.getContent().replace('hr','');
+
       ibOrder.close();
       ibDur.close();
 
       // Update the prograss bar after delete
-      setDurationProgressBar(message.remoteVisitDur, 'subtract');
+      setDurationProgressBar(delIbDur, 'subtract');
 
       delete annotations[delMarkerId];
 
@@ -323,6 +330,7 @@ Connichiwa.onLoad (function () {
   function setDurationProgressBar(visitDuration, command) {
     const totalHours = 8;
     var percentDuration;
+    var statusDuration;
 
     if(command == 'add') {
       currentDuration += parseFloat(visitDuration);
@@ -333,11 +341,11 @@ Connichiwa.onLoad (function () {
 
     percentDuration = round((currentDuration / totalHours) * 100, 1);
 
-    alert(percentDuration + '%-' +'curr: ' + currentDuration);
+    statusDuration = currentDuration + ' out of 8 hrs';
 
     $("#my-progress-bar").css("width", percentDuration + "%");
     $("#my-progress-bar").attr("aria-valuenow", percentDuration + "%");
-    $("#my-progress-bar").html(currentDuration + ' out of 8 hours');
+    $("#my-progress-bar").html(statusDuration.bold());
 
   }
 

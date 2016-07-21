@@ -25,6 +25,7 @@ var placeNames = {};
 var timestamp;
 var command;
 
+
 function initMap() {
 
   $.getScript('infobox.js', function(data, status, jxhr){
@@ -117,6 +118,7 @@ function initMap() {
           localPlaceName = localMarker.title;
 
 
+
           // LOGGING: When they click on a Unsaved Marker
           Connichiwa.broadcast('clickUnsavedMarker', {unsavedPlace: localPlaceName});
         });
@@ -174,15 +176,42 @@ Connichiwa.onMessage('deleteMarker', function (message) {
   delete savedRemoteMarkers[delMarkerId];
 });
 
+Connichiwa.onMessage('updateAnnotate', function (message) {
+  lat = message.remoteMarkerLat;
+  lng = message.remoteMarkerLng;
+
+
+  var markerId = getMarkerUniqueId(lat, lng);
+  //infoWindows[markerId].setContent(message.remotePrompt);
+
+  //var oldDur = annotations[markerId].order;
+
+  annotations[markerId].order.setContent('#' + message.newOrder);
+  annotations[markerId].dur.setContent(message.newDur + 'hr');
+
+
+});
+
+function clearSearch() {
+  var input = document.getElementById('pac-input');
+  input.value = "";
+}
+
+$('#clear-search').click(clearSearch());
 
 /* Buttons' Functions */
 function shareMarker() {
   placeMarkerAndPanTo (markerLatLng, map, lat, lng, localPlaceName);
   createInfoWindow(markerLatLng, map, lat, lng, localPlaceName);
+
   Connichiwa.broadcast ('shareMarker', {remotePosition: markerLatLng, remoteLat: lat, remoteLng: lng, remoteName: localPlaceName});
   localMarker.setMap(null);
+
   $('#floating-panel').hide();
+
+  clearSearch();
 }
+
 
 function annotateMarker() {
   //createInfoWindow(map, lat, lng);
@@ -243,6 +272,7 @@ function promptHoursAndOrder(lat, lng) {
     Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName});
   }*/
 
+
   $('#annotate-panel').show();
 
   $('#btn_annotateEnter').off('click').click(function (e) { //the button does not recognize the new lat nad lng
@@ -253,12 +283,30 @@ function promptHoursAndOrder(lat, lng) {
     var contentString;
     var order;
 
+    var hms;
+    var hours;
+    var min;
     var visitOrder;
     var visitDuration;
 
+    debugger;
 
     visitOrder = $('#visitorder').val();
-    visitDuration = $('#visitduration').val();
+
+    hours = parseFloat($( "#hours option:selected" ).text());
+    min = parseFloat($( "#minutes option:selected" ).text());
+
+    visitDuration = hours + (min / 60);
+    visitDuration = round(visitDuration,1);
+
+    /*hms = document.getElementById("visitduration").value;
+
+
+    hours = hms.split(':');
+
+    visitDuration = (+hours[0]) + (+hours[1] / 60);*/
+
+    visitDuration = round(visitDuration, 1);
 
     if(!visitOrder || !visitDuration) {
       alert('Please type the Visit Order and Duration.');
@@ -273,25 +321,31 @@ function promptHoursAndOrder(lat, lng) {
     }
     else if(infoWindows[markerId] && annotations[markerId]) {
 
-      debugger;
 
       var oldIbOrder = annotations[markerId].order;
       var oldIbDur = annotations[markerId].dur;
 
       oldIbDur = oldIbDur.getContent().replace('hr','');
 
-      console.log('old dur: ' + oldIbDur);
+      //console.log('old dur: ' + oldIbDur);
 
       annotations[markerId].order.setContent('#' + visitOrder);
       annotations[markerId].dur.setContent(visitDuration + 'hr');
 
       Connichiwa.broadcast('updateAnnotate', {remoteMarkerLat: lat, remoteMarkerLng: lng, oldDur: oldIbDur, newOrder: visitOrder, newDur: visitDuration});
+
+      $('#annotate-panel').hide();
     }
   });
 
   $('#btn_annotateCancel').click(function(e) {
     $('#annotate-panel').hide();
   });
+}
+
+function round(value, precision) {
+  var multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
 }
 
 function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
@@ -576,8 +630,26 @@ $(function() {
   }, false);
 });
 
-
-
 function closePanel () {
   $('#floating-panel').hide();
 }
+
+// If user clicks outside of the panel, panel will be hidden
+$(document).mouseup(function (e)
+{
+  var container = $("#floating-panel");
+
+  if (!container.is(e.target) // if the target of the click isn't the container...
+    && container.has(e.target).length === 0) // ... nor a descendant of the container
+  {
+    container.hide();
+  }
+
+  var container2 = $("#annotate-panel");
+
+  if (!container2.is(e.target) // if the target of the click isn't the container...
+    && container2.has(e.target).length === 0) // ... nor a descendant of the container
+  {
+    container2.hide();
+  }
+});
