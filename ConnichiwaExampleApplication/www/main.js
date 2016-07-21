@@ -14,6 +14,7 @@ Connichiwa.onLoad (function () {
 
   var devices = []; // Array to store connected devices
   var button2data, imgData;
+  var currentDuration = 0;
 
 
   
@@ -258,6 +259,7 @@ Connichiwa.onLoad (function () {
     lat = message.remoteMarkerLat;
     lng = message.remoteMarkerLng;
 
+
     var markerId = getMarkerUniqueId(lat, lng);
     //infoWindows[markerId].setContent(message.remotePrompt);
 
@@ -265,7 +267,27 @@ Connichiwa.onLoad (function () {
 
     //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
     createAnnotateInfoWindow(markerId, marker, message.remoteVisitDur, message.remoteVisitOrder);
+    setDurationProgressBar(message.remoteVisitDur, 'add');
     log(message._source, 'Annotate', message.remotePrompt);
+  });
+
+  Connichiwa.onMessage('updateAnnotate', function (message) {
+    lat = message.remoteMarkerLat;
+    lng = message.remoteMarkerLng;
+
+
+    var markerId = getMarkerUniqueId(lat, lng);
+    //infoWindows[markerId].setContent(message.remotePrompt);
+
+    //var oldDur = annotations[markerId].order;
+
+    annotations[markerId].order.setContent('#' + message.newOrder);
+    annotations[markerId].dur.setContent(message.newDur + 'hr');
+
+
+    setDurationProgressBar(message.oldDur, 'subtract');
+    setDurationProgressBar(message.newDur, 'add');
+
   });
 
   Connichiwa.onMessage('deleteMarker', function (message) {
@@ -287,12 +309,42 @@ Connichiwa.onLoad (function () {
       var ibDur = annotations[delMarkerId].dur;
       ibOrder.close();
       ibDur.close();
+
+      // Update the prograss bar after delete
+      setDurationProgressBar(message.remoteVisitDur, 'subtract');
+
       delete annotations[delMarkerId];
+
     }
 
     log(message._source, 'Delete', message.remoteName);
   });
 
+  function setDurationProgressBar(visitDuration, command) {
+    const totalHours = 8;
+    var percentDuration;
+
+    if(command == 'add') {
+      currentDuration += parseFloat(visitDuration);
+    }
+    else if(command == 'subtract') {
+      currentDuration -= parseFloat(visitDuration);
+    }
+
+    percentDuration = round((currentDuration / totalHours) * 100, 1);
+
+    alert(percentDuration + '%-' +'curr: ' + currentDuration);
+
+    $("#my-progress-bar").css("width", percentDuration + "%");
+    $("#my-progress-bar").attr("aria-valuenow", percentDuration + "%");
+    $("#my-progress-bar").html(currentDuration + ' out of 8 hours');
+
+  }
+
+  function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+  }
 
   function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
     if(infoWindows[markerId] && !annotations[markerId]) {
@@ -359,7 +411,7 @@ Connichiwa.onLoad (function () {
       myIbOrder.open(map, marker);
       myIbDur.open(map, marker);
     }
-    else if(infoWindows[markerId] && annotations[markerId]) {
+    /*else if(infoWindows[markerId] && annotations[markerId]) {
 
       var myIbOrder = annotations[markerId].order;
       var myIbDur = annotations[markerId].dur;
@@ -367,7 +419,7 @@ Connichiwa.onLoad (function () {
       myIbOrder.setContent('#' + visitOrder);
       myIbDur.setContent(visitDuration + 'hr');
 
-    }
+    }*/
   }
 
 

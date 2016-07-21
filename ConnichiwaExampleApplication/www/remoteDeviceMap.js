@@ -151,6 +151,8 @@ Connichiwa.onMessage('shareMarker', function (message) {
 });
 
 Connichiwa.onMessage('anotateMarker', function (message) {
+
+
   lat = message.remoteMarkerLat;
   lng = message.remoteMarkerLng;
 
@@ -184,40 +186,20 @@ function shareMarker() {
 
 function annotateMarker() {
   //createInfoWindow(map, lat, lng);
+
   promptHoursAndOrder(lat, lng);
-  $('#floating-panel').hide();
-}
 
-function deleteMarker() {
-  delMarkerLatLng(lat, lng);
-  Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remoteName: localPlaceName});
-  $('#floating-panel').hide();
-}
+  /*$('#annotate-panel').show();
 
-function promptHoursAndOrder(lat, lng) {
-  var markerId = getMarkerUniqueId(lat, lng);
-  var marker = savedRemoteMarkers[markerId];
-  var contentString;
-  var order;
+  $('#btn_annotateEnter').off('click').click(function (e) { //the button does not recognize the new lat nad lng
+    var markerId = getMarkerUniqueId(lat, lng);
+    var marker = savedRemoteMarkers[markerId];
+    var contentString;
+    var order;
 
-  var visitOrder;
-  var visitDuration;
+    var visitOrder;
+    var visitDuration;
 
-  /*order = prompt('Please enter the Visit Order and Duration (in hours) - e.g. 1, 0.5');
-  contentString = placeNames[markerId] + ' ' + order;
-
-  if(!order) {
-    //alert('order is null');
-    //order = '';
-  }
-  else {
-    infoWindows[markerId].setContent(contentString);
-    Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName});
-  }*/
-
-  $('#annotate-panel').show();
-
-  $('#btn_annotateEnter').click(function (e) {
 
     visitOrder = $('#visitorder').val();
     visitDuration = $('#visitduration').val();
@@ -234,13 +216,87 @@ function promptHoursAndOrder(lat, lng) {
     }
   });
 
+  $('#btn_annotateCancel').off('click').click(function(e) {
+    $('#annotate-panel').hide();
+  });*/
+  $('#floating-panel').hide();
+}
+
+function deleteMarker() {
+  delMarkerLatLng(lat, lng);
+  Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remoteName: localPlaceName});
+  $('#floating-panel').hide();
+}
+
+function promptHoursAndOrder(lat, lng) {
+
+
+  /*order = prompt('Please enter the Visit Order and Duration (in hours) - e.g. 1, 0.5');
+  contentString = placeNames[markerId] + ' ' + order;
+
+  if(!order) {
+    //alert('order is null');
+    //order = '';
+  }
+  else {
+    infoWindows[markerId].setContent(contentString);
+    Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName});
+  }*/
+
+  $('#annotate-panel').show();
+
+  $('#btn_annotateEnter').off('click').click(function (e) { //the button does not recognize the new lat nad lng
+
+
+    var markerId = getMarkerUniqueId(lat, lng);
+    var marker = savedRemoteMarkers[markerId];
+    var contentString;
+    var order;
+
+    var visitOrder;
+    var visitDuration;
+
+
+    visitOrder = $('#visitorder').val();
+    visitDuration = $('#visitduration').val();
+
+    if(!visitOrder || !visitDuration) {
+      alert('Please type the Visit Order and Duration.');
+    }
+    else if(infoWindows[markerId] && !annotations[markerId]) {
+
+      createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder);
+
+      Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName, remoteVisitOrder: visitOrder, remoteVisitDur: visitDuration});
+
+      $('#annotate-panel').hide();
+    }
+    else if(infoWindows[markerId] && annotations[markerId]) {
+
+      debugger;
+
+      var oldIbOrder = annotations[markerId].order;
+      var oldIbDur = annotations[markerId].dur;
+
+      oldIbDur = oldIbDur.getContent().replace('hr','');
+
+      console.log('old dur: ' + oldIbDur);
+
+      annotations[markerId].order.setContent('#' + visitOrder);
+      annotations[markerId].dur.setContent(visitDuration + 'hr');
+
+      Connichiwa.broadcast('updateAnnotate', {remoteMarkerLat: lat, remoteMarkerLng: lng, oldDur: oldIbDur, newOrder: visitOrder, newDur: visitDuration});
+    }
+  });
+
   $('#btn_annotateCancel').click(function(e) {
     $('#annotate-panel').hide();
   });
 }
 
 function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
-  if(infoWindows[markerId] && !annotations[markerId]) {
+  //if(infoWindows[markerId] && !annotations[markerId]) {
+
     var myOrderOptions = {
       content: '#' + visitOrder
       ,boxStyle: {
@@ -295,25 +351,21 @@ function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
     var myIbDur = annotations[markerId].dur;
 
 
-    marker.addListener('click', function() {
+    marker.addListener('click', function(point) {
       myIbOrder.open(map, marker);
       myIbDur.open(map, marker);
+
       //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
     });
 
     myIbOrder.open(map, marker);
     myIbDur.open(map, marker);
-  }
+  //}
 
-  else if(infoWindows[markerId] && annotations[markerId]) {
+ // else if(infoWindows[markerId] && annotations[markerId]){
 
-    var myIbOrder = annotations[markerId].order;
-    var myIbDur = annotations[markerId].dur;
 
-    myIbOrder.setContent('#' + visitOrder);
-    myIbDur.setContent(visitDuration + 'hr');
-
-  }
+  //}
 }
 
 function createInfoWindow(latLng, map, lat, lng, placeName) {
@@ -353,9 +405,10 @@ function createInfoWindow(latLng, map, lat, lng, placeName) {
 
     infoWindows[markerId] = ibLabel;
 
-    marker.addListener('click', function() {
+    marker.addListener('click', function(point) {
       ibLabel.open(map, marker);
       //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+
     });
 
     ibLabel.open(map, marker);
@@ -401,8 +454,10 @@ function placeMarkerAndPanTo (latLng, map, lat, lng, placeName) {
       $('#floating-panel').show();
       markerLatLng = e.latLng;
 
-      //lng = e.latLng.lng(); // lng of clicked point;
-      //lat = e.latLng.lat(); // lat of clicked point;
+      lng = e.latLng.lng(); // lng of clicked point;
+      lat = e.latLng.lat(); // lat of clicked point;
+
+      console.log(lng + '-' + lat);
 
     });*/
 
@@ -463,8 +518,11 @@ function removeMarker(marker, markerId) {
  */
 var bindMarkerEvents = function(marker, map, lat, lng) {
   google.maps.event.addListener(marker, "click", function (point) {
+    
+    //var activeLat, activeLng;
+    lat = point.latLng.lat();
+    lng = point.latLng.lng();
 
-    var activeLat, activeLng;
     // Call up the markers
     //createInfoWindow(map, lat, lng);
 
@@ -474,15 +532,14 @@ var bindMarkerEvents = function(marker, map, lat, lng) {
     $('#btn_share').hide();
 
 
-    activeLat = point.latLng.lat();
-    activeLng = point.latLng.lng();
 
 
-    this.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+    //this.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+    marker.setZIndex(Date.now());
 
     //var markerId = getMarkerUniqueId(point.latLng.lat(), point.latLng.lng()); // get marker id by using clicked point's coordinate
     //Connichiwa.broadcast('broadcastLatLng', {myLat: lat, myLng: lng});
-    Connichiwa.broadcast('broadcastLatLng', {myLat: activeLat, myLng: activeLng}, true);
+    Connichiwa.broadcast('broadcastLatLng', {myLat: lat, myLng: lng}, true);
     //var marker = savedMarkers[markerId]; // find marker
     //removeMarker(marker, markerId); // remove it
   });

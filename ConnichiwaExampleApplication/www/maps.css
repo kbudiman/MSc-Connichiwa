@@ -5,8 +5,27 @@ html, body {
 }
 
 
-#map {
+/*#map {
     height: 100%;
+}*/
+
+html,body {width:100%;height:100%;margin:0;padding:0;}
+
+#map {
+    background:white;
+    display: block;
+    position:absolute;
+    height:auto;
+    bottom:0;
+    top:0;
+    left:0;
+    right:0;
+}
+
+.overlap {
+    position:relative;
+    margin-top: 720px;
+
 }
 
 .controls {
@@ -59,13 +78,14 @@ html, body {
     top: 85px;
     left: 15%;
     z-index: 5;
-    background-color: #fff;
+    background-color: rgba(255,255,255,0.75);
     padding: 5px;
     border: 1px solid #999;
     text-align: center;
     font-family: 'Roboto','sans-serif';
     line-height: 30px;
     padding-left: 10px;
+    width: 300px;
 }
 
 #annotate-panel {
@@ -73,7 +93,7 @@ html, body {
     top: 75px;
     left: 13%;
     z-index: 5;
-    background-color: #fff;
+    background-color: rgba(255,255,255,0.75);
     padding: 5px;
     border: 1px solid #999;
     text-align: center;
