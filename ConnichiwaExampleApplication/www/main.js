@@ -46,7 +46,16 @@ Connichiwa.onLoad (function () {
       devices.push(device);
 
       devices[deviceCounter].insert ("Device" + deviceCounter + ": "+ "<b>I am connected!</b>");
+      log(devices[deviceCounter].getIdentifier(), "Connected", "None");
+
       deviceCounter += 1;
+
+      device.loadCSS ("styles.css");
+      device.loadCSS("maps.css");
+
+      device.loadScript("remoteDeviceMap.js");
+
+      device.loadTemplates ("template_remote.html");
 
 
       //Load custom GoogleMaps .JS
@@ -67,13 +76,6 @@ Connichiwa.onLoad (function () {
       $('#consoleDevices').append("\n" + CWDeviceManager.getConnectedDevices());
 
 
-
-      device.loadCSS ("styles.css");
-      device.loadTemplates ("template_remote.html");
-
-      device.loadCSS("maps.css");
-      device.loadScript("remoteDeviceMap.js");
-      
       device.insertTemplate ("remote", {
         target: "body",
         dataSource: device.getIdentifier ()
@@ -126,9 +128,12 @@ Connichiwa.onLoad (function () {
     setDetectedDevices (detectedDevices - 1);
   });
 
-  Connichiwa.on("deviceDisconnected", function () {
+  Connichiwa.on("deviceDisconnected", function (device) {
     //Decrease connected devices
-    deviceCounter -= 1;
+    //deviceCounter -= 1;
+
+    log(device.getIdentifier(), "Disconnected", "None");
+
     var connectedDevices = CWTemplates.get ('devices_connected_count');
     setConnectedDevices (connectedDevices - 1);
 
@@ -291,6 +296,8 @@ Connichiwa.onLoad (function () {
     setDurationProgressBar(message.oldDur, 'subtract');
     setDurationProgressBar(message.newDur, 'add');
 
+    log(message._source, 'Update Annotate', ', Visit Order: ' + message.newOrder + ', Visit Duration: ' + message.newDur);
+
   });
 
   Connichiwa.onMessage('deleteMarker', function (message) {
@@ -328,7 +335,7 @@ Connichiwa.onLoad (function () {
   });
 
   function setDurationProgressBar(visitDuration, command) {
-    const totalHours = 8;
+    const totalHours = 7;
     var percentDuration;
     var statusDuration;
 
@@ -341,7 +348,7 @@ Connichiwa.onLoad (function () {
 
     percentDuration = round((currentDuration / totalHours) * 100, 1);
 
-    statusDuration = currentDuration + ' out of 8 hrs';
+    statusDuration = currentDuration + ' out of 7 hrs';
 
     $("#my-progress-bar").css("width", percentDuration + "%");
     $("#my-progress-bar").attr("aria-valuenow", percentDuration + "%");

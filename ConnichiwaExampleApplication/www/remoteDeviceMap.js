@@ -134,6 +134,8 @@ function initMap() {
 
     map.fitBounds(bounds);
   });
+
+
 }
 
 
@@ -196,8 +198,6 @@ function clearSearch() {
   var input = document.getElementById('pac-input');
   input.value = "";
 }
-
-$('#clear-search').click(clearSearch());
 
 /* Buttons' Functions */
 function shareMarker() {
@@ -289,8 +289,6 @@ function promptHoursAndOrder(lat, lng) {
     var visitOrder;
     var visitDuration;
 
-    debugger;
-
     visitOrder = $('#visitorder').val();
 
     hours = parseFloat($( "#hours option:selected" ).text());
@@ -314,6 +312,8 @@ function promptHoursAndOrder(lat, lng) {
     else if(infoWindows[markerId] && !annotations[markerId]) {
 
       createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder);
+
+      contentString = localPlaceName + ', Visit Order: ' + visitOrder + ', Duration: ' + visitDuration + 'hr'
 
       Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName, remoteVisitOrder: visitOrder, remoteVisitDur: visitDuration});
 
@@ -622,12 +622,14 @@ $(function() {
   document.addEventListener('gestureend', function(e) {
     if (e.scale < 1.0) {
       // User moved fingers closer together
-      Connichiwa.broadcast('broadcastZoom', {zoom: 'Zoom In'});
+      Connichiwa.broadcast('broadcastZoom', {zoom: 'Zoom Out'});
     } else if (e.scale > 1.0) {
       // User moved fingers further apart
-      Connichiwa.broadcast('broadcastZoom', {zoom: 'Zoom Out'});
+      Connichiwa.broadcast('broadcastZoom', {zoom: 'Zoom In'});
     }
   }, false);
+
+  $('#clear-search').click(clearSearch());
 });
 
 function closePanel () {
