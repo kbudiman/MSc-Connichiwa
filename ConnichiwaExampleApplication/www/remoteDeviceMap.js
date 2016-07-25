@@ -364,7 +364,15 @@ function round(value, precision) {
 
 function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
   //if(infoWindows[markerId] && !annotations[markerId]) {
+/*
+  var boxOrder = document.createElement("div");
+  //boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: yellow; padding: 5px;";
+  boxOrder.innerHTML = '#' + visitOrder;
 
+  var boxDur = document.createElement("div");
+  //boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: yellow; padding: 5px;";
+  boxDur.innerHTML = visitDuration + 'hr';
+*/
     var myOrderOptions = {
       content: '#' + visitOrder
       ,boxStyle: {
@@ -420,18 +428,41 @@ function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
 
 
     marker.addListener('click', function(point) {
+      myIbOrder.close();
       myIbOrder.open(map, marker);
       myIbDur.open(map, marker);
 
+      /*$('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
+      $('#floating-panel').show();
+
+      $('#btn_annotate').show();
+      $('#btn_delete').show();
+      $('#btn_share').hide();*/
+
+      //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
+    });
+
+    /*google.maps.event.addDomListener(annotations[markerId].order.content_,'click',(function(e) {
+
       $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
       $('#floating-panel').show();
-      
+
       $('#btn_annotate').show();
       $('#btn_delete').show();
       $('#btn_share').hide();
 
-      //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
-    });
+    }));
+
+    google.maps.event.addDomListener(annotations[markerId].dur.content_,'click',(function(e) {
+
+      $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
+      $('#floating-panel').show();
+
+      $('#btn_annotate').show();
+      $('#btn_delete').show();
+      $('#btn_share').hide();
+
+    }));*/
 
     myIbOrder.open(map, marker);
     myIbDur.open(map, marker);
@@ -451,8 +482,13 @@ function createInfoWindow(latLng, map, lat, lng, placeName) {
   //alert('infoWindow' + latLng);
 
   if(!infoWindows[markerId]) {
+
+    var boxText = document.createElement("div");
+    //boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: yellow; padding: 5px;";
+    boxText.innerHTML = contentString;
+
     var myOptions = {
-      content: contentString
+      content: boxText
       ,boxStyle: {
         border: "1px solid black"
         ,textAlign: "center"
@@ -478,14 +514,31 @@ function createInfoWindow(latLng, map, lat, lng, placeName) {
       content: contentString
     });*/
 
+
+
     infoWindows[markerId] = ibLabel;
 
     marker.addListener('click', function(point) {
       ibLabel.open(map, marker);
+
       //$('#floating-panel').show();
       //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 
     });
+
+    google.maps.event.addDomListener(infoWindows[markerId].content_,'click',(function(e) {
+
+      $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
+      $('#floating-panel').show();
+
+      $('#btn_annotate').show();
+      $('#btn_delete').show();
+      $('#btn_share').hide();
+
+
+      }));
+
+
 
     ibLabel.open(map, marker);
   }
@@ -603,6 +656,7 @@ var bindMarkerEvents = function(marker, map, lat, lng) {
     //createInfoWindow(map, lat, lng);
     $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
     $('#floating-panel').show();
+
     $('#btn_annotate').show();
     $('#btn_delete').show();
     $('#btn_share').hide();
