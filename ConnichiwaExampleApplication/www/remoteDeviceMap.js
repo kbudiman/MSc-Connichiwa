@@ -33,13 +33,19 @@ function initMap() {
   });
 
 
+  var minZoomLevel = 16;
+
   // Initialize the GoogleMap
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 51.51825, lng: -0.119648},
-    zoom: 13,
+    center: {lat: 51.524706, lng: -0.133569},
+    zoom: minZoomLevel,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
+  // Limit the zoom level
+  google.maps.event.addListener(map, 'zoom_changed', function () {
+    if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);
+  });
 
 
   // Create the search box and link it to the UI element.
@@ -105,6 +111,8 @@ function initMap() {
       markers.forEach(function(marker) {
         marker.addListener('click', function (e) {
 
+          localPlaceName = localMarker.title;
+          $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
           $('#floating-panel').show();
 
           $('#btn_share').show();
@@ -115,7 +123,6 @@ function initMap() {
           lat = e.latLng.lat(); // lat of clicked point;
           lng = e.latLng.lng(); // lng of clicked point;
 
-          localPlaceName = localMarker.title;
 
 
 
@@ -272,8 +279,13 @@ function promptHoursAndOrder(lat, lng) {
     Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName});
   }*/
 
-
+  $('#annotatePlaceName').html('<b>' + localPlaceName + '</b>');
   $('#annotate-panel').show();
+
+  //Reset values
+  document.getElementById('order').value= "0";
+  document.getElementById('hours').value= "0";
+  document.getElementById('minutes').value= "0";
 
   $('#btn_annotateEnter').off('click').click(function (e) { //the button does not recognize the new lat nad lng
 
@@ -289,7 +301,8 @@ function promptHoursAndOrder(lat, lng) {
     var visitOrder;
     var visitDuration;
 
-    visitOrder = $('#visitorder').val();
+
+    visitOrder = parseFloat($( "#order option:selected" ).text());
 
     hours = parseFloat($( "#hours option:selected" ).text());
     min = parseFloat($( "#minutes option:selected" ).text());
@@ -305,6 +318,7 @@ function promptHoursAndOrder(lat, lng) {
     visitDuration = (+hours[0]) + (+hours[1] / 60);*/
 
     visitDuration = round(visitDuration, 1);
+
 
     if(!visitOrder || !visitDuration) {
       alert('Please type the Visit Order and Duration.');
@@ -409,6 +423,13 @@ function createAnnotateInfoWindow(markerId, marker, visitDuration, visitOrder) {
       myIbOrder.open(map, marker);
       myIbDur.open(map, marker);
 
+      $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
+      $('#floating-panel').show();
+      
+      $('#btn_annotate').show();
+      $('#btn_delete').show();
+      $('#btn_share').hide();
+
       //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
     });
 
@@ -461,6 +482,7 @@ function createInfoWindow(latLng, map, lat, lng, placeName) {
 
     marker.addListener('click', function(point) {
       ibLabel.open(map, marker);
+      //$('#floating-panel').show();
       //ibLabel.setZIndex(google.maps.Marker.MAX_ZINDEX + 1);
 
     });
@@ -579,7 +601,7 @@ var bindMarkerEvents = function(marker, map, lat, lng) {
 
     // Call up the markers
     //createInfoWindow(map, lat, lng);
-
+    $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
     $('#floating-panel').show();
     $('#btn_annotate').show();
     $('#btn_delete').show();

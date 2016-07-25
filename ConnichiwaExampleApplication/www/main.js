@@ -348,7 +348,8 @@ Connichiwa.onLoad (function () {
 
     percentDuration = round((currentDuration / totalHours) * 100, 1);
 
-    statusDuration = currentDuration + ' out of 7 hrs';
+    var strCurDuration = currentDuration.toString();
+    statusDuration = strCurDuration.slice(0, 3) + ' out of 7 hrs';
 
     $("#my-progress-bar").css("width", percentDuration + "%");
     $("#my-progress-bar").attr("aria-valuenow", percentDuration + "%");
@@ -622,13 +623,13 @@ function initMap () {
   });
 
   map = new google.maps.Map (document.getElementById ('map'), {
-    zoom: 13,
+    zoom: 14,
     draggable: false,
     scrollwheel: false,
-    center: {lat: 51.51825, lng: -0.119648},
+    center: {lat: 51.51458, lng: -0.12101},
     panControl: false,
-    maxZoom: 13,
-    minZoom: 13
+    maxZoom: 14,
+    minZoom: 14
   });
 }
 

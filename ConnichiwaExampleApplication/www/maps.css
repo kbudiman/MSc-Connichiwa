@@ -4,12 +4,21 @@ html, body {
     padding: 0;
 }
 
-
-/*#map {
+#transparentOverlay {
+    top:0;
+    left: 0;
     height: 100%;
-}*/
+    width: 100%;
+    background:white;
+    opacity: 0.99;
+    position: fixed;
+}
 
-html,body {width:100%;height:100%;margin:0;padding:0;}
+#map {
+    height: 100%;
+}
+
+/*html,body {width:100%;height:100%;margin:0;padding:0;}*/
 
 #map {
     background:white;
@@ -24,7 +33,7 @@ html,body {width:100%;height:100%;margin:0;padding:0;}
 
 .overlap {
     position:relative;
-    margin-top: 720px;
+    margin-top: 700px;
 
 }
 
@@ -85,7 +94,6 @@ html,body {width:100%;height:100%;margin:0;padding:0;}
     font-family: 'Roboto','sans-serif';
     line-height: 30px;
     padding-left: 10px;
-    width: 300px;
 }
 
 #clear-search {
@@ -108,6 +116,7 @@ html,body {width:100%;height:100%;margin:0;padding:0;}
     font-family: 'Roboto','sans-serif';
     line-height: 40px;
     padding-left: 10px;
+    width: 300px;
 }
 
 .annotateText {
@@ -116,7 +125,8 @@ html,body {width:100%;height:100%;margin:0;padding:0;}
 }
 
 .annotateLabel {
-    float: left;
+    /*float: left;*/
+    font-size: 15px;
 }
 
 .overflow {
@@ -124,8 +134,11 @@ html,body {width:100%;height:100%;margin:0;padding:0;}
 }
 
 .btnInput {
-    float: right;
+    /*float: right;*/
     margin: 10px;
+    height: 50px;
+    width: 100px;
+    font-size: 15px;
 }
 /*#btn_annotateEnter {
     float: right;
