@@ -238,10 +238,10 @@ Connichiwa.onLoad (function () {
   // OnMessage for GoogleMaps
   // Broadcast marker's lat and lng to other connected devices
   Connichiwa.onMessage('shareMarker', function (message) {
-    lat = message.remoteLat;
-    lng = message.remoteLng;
-    latLng = message.remotePosition;
-    placeName = message.remoteName;
+    var lat = message.remoteLat;
+    var lng = message.remoteLng;
+    var latLng = message.remotePosition;
+    var placeName = message.remoteName;
 
     var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
     var markerId = getMarkerUniqueId(lat,lng);
@@ -264,8 +264,8 @@ Connichiwa.onLoad (function () {
 
 
   Connichiwa.onMessage('anotateMarker', function (message) {
-    lat = message.remoteMarkerLat;
-    lng = message.remoteMarkerLng;
+    var lat = message.remoteMarkerLat;
+    var lng = message.remoteMarkerLng;
 
 
     var markerId = getMarkerUniqueId(lat, lng);
@@ -280,8 +280,8 @@ Connichiwa.onLoad (function () {
   });
 
   Connichiwa.onMessage('updateAnnotate', function (message) {
-    lat = message.remoteMarkerLat;
-    lng = message.remoteMarkerLng;
+    var lat = message.remoteMarkerLat;
+    var lng = message.remoteMarkerLng;
 
 
     var markerId = getMarkerUniqueId(lat, lng);
@@ -339,6 +339,7 @@ Connichiwa.onLoad (function () {
     var percentDuration;
     var statusDuration;
 
+
     if(command == 'add') {
       currentDuration += parseFloat(visitDuration);
     }
@@ -346,14 +347,36 @@ Connichiwa.onLoad (function () {
       currentDuration -= parseFloat(visitDuration);
     }
 
-    percentDuration = round((currentDuration / totalHours) * 100, 1);
 
-    var strCurDuration = currentDuration.toString();
-    statusDuration = strCurDuration.slice(0, 3) + ' out of 7 hrs';
 
-    $("#my-progress-bar").css("width", percentDuration + "%");
-    $("#my-progress-bar").attr("aria-valuenow", percentDuration + "%");
-    $("#my-progress-bar").html(statusDuration.bold());
+    if(currentDuration <= 7) {
+
+      percentDuration = round((currentDuration / totalHours) * 100, 1);
+
+
+      var strCurDuration = currentDuration.toString();
+      statusDuration = strCurDuration.slice(0, 3) + ' out of 7 hrs';
+
+      $("#my-progress-bar").css("width", percentDuration + "%");
+      $("#my-progress-bar").attr("aria-valuenow", percentDuration + "%");
+      $("#my-progress-bar").html(statusDuration.bold());
+    }
+
+    else {
+      //currentDuration = 7;
+
+      //percentDuration = round((currentDuration / totalHours) * 100, 1);
+
+      $("#my-progress-bar").css("width", "100%");
+      $("#my-progress-bar").attr("aria-valuenow", "100%");
+      alert('Your trip runs longer than 7 hours!');
+      statusDuration = 'More than 7 hours!';
+      $("#my-progress-bar").html(statusDuration.bold());
+
+    }
+
+
+
 
   }
 
@@ -626,7 +649,7 @@ function initMap () {
     zoom: 14,
     draggable: false,
     scrollwheel: false,
-    center: {lat: 51.51458, lng: -0.12101},
+    center: {lat: 51.51402819, lng: -0.10990552},
     panControl: false,
     maxZoom: 14,
     minZoom: 14
