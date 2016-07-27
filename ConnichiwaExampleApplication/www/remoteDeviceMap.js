@@ -342,11 +342,13 @@ function promptHoursAndOrder(lat, lng) {
 
     visitDuration = round(visitDuration, 1);
 
-    
+
     console.log('order: ' + visitOrder + ' duration:' + visitDuration);
 
     if(!visitOrder || !visitDuration) {
-      alert('Please type the Visit Order and Duration.');
+      //alert('Please type the Visit Order and Duration.');
+      debugger;
+      $('#annotate-error-panel').show();
     }
     else if(infoWindows[markerId] && !annotations[markerId]) {
 
@@ -380,6 +382,10 @@ function promptHoursAndOrder(lat, lng) {
   $('#btn_annotateCancel').click(function(e) {
     $('#annotate-panel').hide();
   });
+}
+
+function closeAnnotateError() {
+  $('#annotate-error-panel').hide();
 }
 
 function round(value, precision) {

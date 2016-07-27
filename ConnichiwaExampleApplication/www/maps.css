@@ -4,13 +4,13 @@ html, body {
     padding: 0;
 }
 
-#transparentOverlay {
+.transparentOverlay {
     top:0;
     left: 0;
     height: 100%;
     width: 100%;
     background:white;
-    opacity: 0.99;
+    /*opacity: 0.99;*/
     position: fixed;
 }
 
@@ -85,7 +85,7 @@ html, body {
 #floating-panel {
     position: absolute;
     top: 85px;
-    left: 15%;
+    left: 12%;
     z-index: 5;
     background-color: rgba(255,255,255,0.75);
     padding: 5px;
@@ -95,6 +95,22 @@ html, body {
     line-height: 30px;
     padding-left: 10px;
 }
+
+#annotate-error-panel {
+    position: absolute;
+    top: 150px;
+    left: 15%;
+    z-index: 100;
+    background-color: rgba(255,255,255, 1.0);
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font-family: 'Roboto','sans-serif';
+    line-height: 30px;
+    padding-left: 10px;
+    height: 100px;
+}
+
 
 #clear-search {
     position: absolute;
