@@ -306,7 +306,10 @@ function promptHoursAndOrder(lat, lng) {
   $('#annotate-panel').show();
 
   //Reset values
-  if(annotations[markerId]) {
+  document.getElementById('order').value= "0";
+  document.getElementById('hours').value= "0";
+  document.getElementById('minutes').value= "0";
+  /*if(annotations[markerId].order != 0 && annotations[markerId].dur != 0) {
     document.getElementById('order').value= durations[markerId].order;
     document.getElementById('hours').value= durations[markerId].durHr;
     document.getElementById('minutes').value= durations[markerId].durMin;
@@ -319,7 +322,7 @@ function promptHoursAndOrder(lat, lng) {
     document.getElementById('order').value= "0";
     document.getElementById('hours').value= "0";
     document.getElementById('minutes').value= "0";
-  }
+  }*/
 
   $('#btn_annotateEnter').off('click').click(function (e) { //the button does not recognize the new lat nad lng
 
@@ -351,7 +354,7 @@ function promptHoursAndOrder(lat, lng) {
     }*/
 
 
-    durations[markerId] = {order: $( "#order option:selected" ).text(),durHr: $( "#hours option:selected" ).text(), durMin: $( "#minutes option:selected" ).text()};
+    //durations[markerId] = {order: $( "#order option:selected" ).text(),durHr: $( "#hours option:selected" ).text(), durMin: $( "#minutes option:selected" ).text()};
 
     hours = parseFloat($( "#hours option:selected" ).text());
     min = parseFloat($( "#minutes option:selected" ).text());
