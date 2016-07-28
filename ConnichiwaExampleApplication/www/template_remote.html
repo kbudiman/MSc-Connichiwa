@@ -114,16 +114,16 @@
    </select>
     <label class="annotateLabel" for="minutes">Minutes</label>
     <select name="minutes" id="minutes">
-      <option value="0" selected="selected">00</option>
-      <option value="1">01</option>
-      <option value="2">02</option>
-      <option value="3">03</option>
-      <option value="4">04</option>
-      <option value="5">05</option>
-      <option value="6">06</option>
-      <option value="7">07</option>
-      <option value="8">08</option>
-      <option value="9">09</option>
+      <option value="0" selected="selected">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
       <option value="10">10</option>
       <option value="11">11</option>
       <option value="12">12</option>
@@ -181,11 +181,12 @@
     <input class="btnInput" id="btn_annotateEnter" type=button value="Enter">
   </div>
 
-  <div id="annotate-error-panel" style="display:none">
+  <div id="annotateErrorPanel" style="display:none">
     <label class="annotateLabel" id="annotateErrorLabel">Please enter a visit no. and order</label>
     <br />
     <br />
-    <input class="btnInput" id="btn_annotateError" onclick="closeAnnotateError()" type=button value="OK">
+    <input class="btnInput" id="btn_annotateError" type=button value="OK">
+    <br />
   </div>
 
   <input id="pac-input" class="controls" type="text" placeholder="Search Box">

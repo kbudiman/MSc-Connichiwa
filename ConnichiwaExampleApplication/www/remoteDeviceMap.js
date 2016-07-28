@@ -20,6 +20,7 @@ var savedMarkers = {};
 var savedRemoteMarkers = {};
 var infoWindows = {};
 var annotations = {};
+var durations = {};
 var remoteAnnotations = {};
 var placeNames = {};
 var timestamp;
@@ -305,9 +306,20 @@ function promptHoursAndOrder(lat, lng) {
   $('#annotate-panel').show();
 
   //Reset values
-  document.getElementById('order').value= "0";
-  document.getElementById('hours').value= "0";
-  document.getElementById('minutes').value= "0";
+  if(annotations[markerId]) {
+    document.getElementById('order').value= durations[markerId].order;
+    document.getElementById('hours').value= durations[markerId].durHr;
+    document.getElementById('minutes').value= durations[markerId].durMin;
+
+    if(isNaN(durations[markerId].durMin)) {
+      durations[markerId].durMin = "0";
+    }
+  }
+  else {
+    document.getElementById('order').value= "0";
+    document.getElementById('hours').value= "0";
+    document.getElementById('minutes').value= "0";
+  }
 
   $('#btn_annotateEnter').off('click').click(function (e) { //the button does not recognize the new lat nad lng
 
@@ -321,14 +333,29 @@ function promptHoursAndOrder(lat, lng) {
     var hms;
     var hours;
     var min;
+    var minReset;
     var visitOrder;
     var visitDuration;
 
 
     visitOrder = parseFloat($( "#order option:selected" ).text());
 
+    /*minReset = $( "#minutes option:selected" ).text();
+
+    if(isNaN(minReset)) {
+
+      minReset = "0";
+    }
+    else {
+      minReset = $( "#minutes option:selected" ).text();
+    }*/
+
+
+    durations[markerId] = {order: $( "#order option:selected" ).text(),durHr: $( "#hours option:selected" ).text(), durMin: $( "#minutes option:selected" ).text()};
+
     hours = parseFloat($( "#hours option:selected" ).text());
     min = parseFloat($( "#minutes option:selected" ).text());
+
 
     visitDuration = hours + (min / 60);
     visitDuration = round(visitDuration,1);
@@ -345,10 +372,10 @@ function promptHoursAndOrder(lat, lng) {
 
     console.log('order: ' + visitOrder + ' duration:' + visitDuration);
 
-    if(!visitOrder || !visitDuration) {
+    if(visitOrder == 0 || visitDuration == 0) {
       //alert('Please type the Visit Order and Duration.');
-      debugger;
-      $('#annotate-error-panel').show();
+      $('#annotateErrorPanel').show();
+
     }
     else if(infoWindows[markerId] && !annotations[markerId]) {
 
@@ -361,7 +388,6 @@ function promptHoursAndOrder(lat, lng) {
       $('#annotate-panel').hide();
     }
     else if(infoWindows[markerId] && annotations[markerId]) {
-
 
       var oldIbOrder = annotations[markerId].order;
       var oldIbDur = annotations[markerId].dur;
@@ -382,11 +408,15 @@ function promptHoursAndOrder(lat, lng) {
   $('#btn_annotateCancel').click(function(e) {
     $('#annotate-panel').hide();
   });
+
+  $('#btn_annotateError').click(function(e){
+
+    $('#annotateErrorPanel').hide();
+    $('#annotate-panel').hide();
+  });
 }
 
-function closeAnnotateError() {
-  $('#annotate-error-panel').hide();
-}
+
 
 function round(value, precision) {
   var multiplier = Math.pow(10, precision || 0);
@@ -672,6 +702,7 @@ function delMarkerLatLng(lat, lng) {
     ibOrder.close();
     ibDur.close();
     delete annotations[delMarkerId];
+    delete durations[delMarkerId];
   }
 
 }

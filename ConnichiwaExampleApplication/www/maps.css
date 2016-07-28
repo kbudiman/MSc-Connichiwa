@@ -96,7 +96,7 @@ html, body {
     padding-left: 10px;
 }
 
-#annotate-error-panel {
+#annotateErrorPanel {
     position: absolute;
     top: 150px;
     left: 15%;
