@@ -407,13 +407,23 @@ Connichiwa.onLoad (function () {
 
     if(currentDuration <= 7) {
 
+      debugger;
       percentDuration = round((currentDuration / totalHours) * 100, 1);
 
 
       var strCurDuration = currentDuration.toString();
       statusDuration = strCurDuration.slice(0, 3) + ' out of 7 hrs';
 
+      if ( document.getElementById("my-progress-bar").className.match(/(?:^|\s)progress-bar-danger(?!\S)/) ) {
+
+        document.getElementById("my-progress-bar").className =
+          document.getElementById("my-progress-bar").className.replace
+          ( /(?:^|\s)progress-bar-danger(?!\S)/g , '' )
+        ;
+      }
+
       $("#my-progress-bar").css("width", percentDuration + "%");
+      //$("#my-progress-bar").css("color", "#C0C0C0");
       $("#my-progress-bar").attr("aria-valuenow", percentDuration + "%");
       $("#my-progress-bar").html(statusDuration.bold());
     }
@@ -428,6 +438,7 @@ Connichiwa.onLoad (function () {
       alert('Your trip runs longer than 7 hours!');
       statusDuration = 'More than 7 hours!';
       $("#my-progress-bar").html(statusDuration.bold());
+      $("div.progress-bar-success").toggleClass("progress-bar-danger");
 
     }
 
