@@ -5,6 +5,8 @@ var savedMarkers = {};
 var infoWindows = {};
 var annotations = {};
 var deviceCounter = 0;
+var tripPath;
+var tripPlanCoordinates = [];
 
 //All Connichiwa-related stuff should always be done in Connichiwa.onLoad()
 Connichiwa.onLoad (function () {
@@ -276,7 +278,10 @@ Connichiwa.onLoad (function () {
     //promptHoursAndOrder(message.remoteMarkerLat, message.remoteMarkerLng);
     createAnnotateInfoWindow(markerId, marker, message.remoteVisitDur, message.remoteVisitOrder);
     setDurationProgressBar(message.remoteVisitDur, 'add');
+    setPath(lat, lng);
+
     log(message._source, 'Annotate', message.remotePrompt);
+
   });
 
   Connichiwa.onMessage('updateAnnotate', function (message) {
@@ -295,6 +300,8 @@ Connichiwa.onLoad (function () {
 
     setDurationProgressBar(message.oldDur, 'subtract');
     setDurationProgressBar(message.newDur, 'add');
+
+    setPath(lat, lng);
 
     log(message._source, 'Update Annotate', ', Visit Order: ' + message.newOrder + ', Visit Duration: ' + message.newDur);
 
@@ -319,7 +326,9 @@ Connichiwa.onLoad (function () {
       var ibDur = annotations[delMarkerId].dur;
 
       var delIbDur;
+      var delIbOrder;
       delIbDur = ibDur.getContent().replace('hr','');
+      delIbOrder = parseInt(ibOrder.getContent().replace('#','')) - 1;
 
       ibOrder.close();
       ibDur.close();
@@ -327,12 +336,59 @@ Connichiwa.onLoad (function () {
       // Update the prograss bar after delete
       setDurationProgressBar(delIbDur, 'subtract');
 
+      //debugger;
+
+      //tripPlanCoordinates[delIbOrder].lat = null;
+     // tripPlanCoordinates[delIbOrder].lng = null;
+      tripPlanCoordinates = tripPlanCoordinates.filter(function( obj ) {
+        return (obj.lat !== message.remoteMarkerLat && obj.lng !== message.remoteMarkerLng);
+      });
+
       delete annotations[delMarkerId];
+
+      tripPath.setPath(tripPlanCoordinates);
+
+      tripPath.setMap(map);
 
     }
 
     log(message._source, 'Delete', message.remoteName);
   });
+
+  function setPath(remoteLat, remoteLng) {
+    //debugger;
+    var markerId = getMarkerUniqueId(remoteLat, remoteLng);
+    var order = annotations[markerId].order;
+    order = parseInt(order.getContent().replace('#','')) - 1;
+
+    //tripPlanCoordinates[order] = {lat: remoteLat, lng: remoteLng};
+    tripPlanCoordinates.push({lat: remoteLat, lng: remoteLng, tripOrder: order});
+
+    // sort by value
+    tripPlanCoordinates.sort(function (a, b) {
+      if (a.tripOrder > b.tripOrder) {
+        return 1;
+      }
+      if (a.tripOrder < b.tripOrder) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    });
+
+
+    tripPath.setOptions({
+      path: tripPlanCoordinates,
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2,
+      zIndex: 5
+    });
+
+    
+    tripPath.setMap(map);
+  }
 
   function setDurationProgressBar(visitDuration, command) {
     const totalHours = 7;
@@ -653,6 +709,16 @@ function initMap () {
     panControl: false,
     maxZoom: 14,
     minZoom: 14
+  });
+
+  tripPath = new google.maps.Polyline({
+    path: [],
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+    zIndex: 5
+
   });
 }
 

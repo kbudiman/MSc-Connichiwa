@@ -110,45 +110,52 @@ function initMap() {
         scaledSize: new google.maps.Size(25, 25)
       };
 
+      var placeLat = place.geometry.location.lat();
+      var placeLng = place.geometry.location.lng();
+      var markerId = getMarkerUniqueId(placeLat, placeLng);
+
       // Create a marker for each place.
-      localMarker = new google.maps.Marker({
-        map: map,
-        // icon: icon,
-        title: place.name,
-        position: place.geometry.location
-      });
-
-      localPlaceName = localMarker.title;
-
-      // Click event for each marker (to trigger small dashboard)
-      /*marker.addListener('click', function (e) {
-        $('#floating-panel').show();
-        markerLatLng = e.latLng;
-      });*/
-
-      markers.push(localMarker);
-      markers.forEach(function(marker) {
-        marker.addListener('click', function (e) {
-
-          localPlaceName = localMarker.title;
-          $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
-          $('#floating-panel').show();
-
-          $('#btn_share').show();
-          $('#btn_annotate').hide();
-          $('#btn_delete').hide();
-
-          markerLatLng = e.latLng;
-          lat = e.latLng.lat(); // lat of clicked point;
-          lng = e.latLng.lng(); // lng of clicked point;
-
-
-
-
-          // LOGGING: When they click on a Unsaved Marker
-          Connichiwa.broadcast('clickUnsavedMarker', {unsavedPlace: localPlaceName});
+      if(!savedMarkers[markerId]) {
+        
+        localMarker = new google.maps.Marker({
+          map: map,
+          // icon: icon,
+          title: place.name,
+          position: place.geometry.location
         });
-      });
+
+        localPlaceName = localMarker.title;
+
+        // Click event for each marker (to trigger small dashboard)
+        /*marker.addListener('click', function (e) {
+          $('#floating-panel').show();
+          markerLatLng = e.latLng;
+        });*/
+
+        markers.push(localMarker);
+        markers.forEach(function(marker) {
+          marker.addListener('click', function (e) {
+
+            localPlaceName = localMarker.title;
+            $('#floatingPlaceName').html('<b>' + localPlaceName + '</b>');
+            $('#floating-panel').show();
+
+            $('#btn_share').show();
+            $('#btn_annotate').hide();
+            $('#btn_delete').hide();
+
+            markerLatLng = e.latLng;
+            lat = e.latLng.lat(); // lat of clicked point;
+            lng = e.latLng.lng(); // lng of clicked point;
+
+
+
+
+            // LOGGING: When they click on a Unsaved Marker
+            Connichiwa.broadcast('clickUnsavedMarker', {unsavedPlace: localPlaceName});
+          });
+        });
+      }
 
       if (place.geometry.viewport) {
         // Only geocodes have viewport.
@@ -309,7 +316,8 @@ function promptHoursAndOrder(lat, lng) {
   document.getElementById('order').value= "0";
   document.getElementById('hours').value= "0";
   document.getElementById('minutes').value= "0";
-  /*if(annotations[markerId].order != 0 && annotations[markerId].dur != 0) {
+
+  /*if(annotations[markerId].order && annotations[markerId].dur) {
     document.getElementById('order').value= durations[markerId].order;
     document.getElementById('hours').value= durations[markerId].durHr;
     document.getElementById('minutes').value= durations[markerId].durMin;
@@ -705,7 +713,7 @@ function delMarkerLatLng(lat, lng) {
     ibOrder.close();
     ibDur.close();
     delete annotations[delMarkerId];
-    delete durations[delMarkerId];
+    //delete durations[delMarkerId];
   }
 
 }
