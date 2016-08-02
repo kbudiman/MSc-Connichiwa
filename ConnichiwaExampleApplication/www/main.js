@@ -407,7 +407,6 @@ Connichiwa.onLoad (function () {
 
     if(currentDuration <= 7) {
 
-      debugger;
       percentDuration = round((currentDuration / totalHours) * 100, 1);
 
 
@@ -435,10 +434,12 @@ Connichiwa.onLoad (function () {
 
       $("#my-progress-bar").css("width", "100%");
       $("#my-progress-bar").attr("aria-valuenow", "100%");
-      alert('Your trip runs longer than 7 hours!');
-      statusDuration = 'More than 7 hours!';
+      //alert('Your trip runs longer than 7 hours');
+      statusDuration = 'More than 7 hours by ' + (currentDuration - 7) + ' hours';
       $("#my-progress-bar").html(statusDuration.bold());
-      $("div.progress-bar-success").toggleClass("progress-bar-danger");
+      //$("div.progress-bar-success").toggleClass("progress-bar-danger");
+
+      document.getElementById("my-progress-bar").className += " progress-bar-danger";
 
     }
 
