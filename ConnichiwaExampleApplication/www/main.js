@@ -303,7 +303,7 @@ Connichiwa.onLoad (function () {
 
     setPath(lat, lng);
 
-    log(message._source, 'Update Annotate', ', Visit Order: ' + message.newOrder + ', Visit Duration: ' + message.newDur);
+    log(message._source, 'Update Annotate', message.place +', Visit Order: ' + message.newOrder + ', Visit Duration: ' + message.newDur);
 
   });
 

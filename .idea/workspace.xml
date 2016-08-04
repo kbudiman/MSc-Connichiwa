@@ -4,7 +4,6 @@
     <list default="true" id="ec561fdf-e871-4375-a0cd-5d6090bca4c2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/remoteDeviceMap.js" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/remoteDeviceMap.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html" afterPath="$PROJECT_DIR$/ConnichiwaExampleApplication/www/template_master.html" />
     </list>
     <ignored path="Connichiwa-Example-Application-master.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,8 +27,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="890">
-              <caret line="436" column="49" selection-start-line="436" selection-start-column="49" selection-end-line="436" selection-end-column="49" />
+            <state relative-caret-position="2925">
+              <caret line="455" column="25" selection-start-line="455" selection-start-column="17" selection-end-line="455" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -38,8 +37,8 @@
       <file leaf-file-name="remoteDeviceMap.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/remoteDeviceMap.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="221" column="59" selection-start-line="221" selection-start-column="59" selection-end-line="221" selection-end-column="59" />
+            <state relative-caret-position="245">
+              <caret line="295" column="116" selection-start-line="295" selection-start-column="116" selection-end-line="295" selection-end-column="116" />
               <folding>
                 <element signature="e#0#42#0" expanded="false" />
               </folding>
@@ -360,12 +359,12 @@
       <workItem from="1468334822744" duration="41822000" />
       <workItem from="1468848480157" duration="45444000" />
       <workItem from="1469033931758" duration="69751000" />
-      <workItem from="1470046381763" duration="21692000" />
+      <workItem from="1470046381763" duration="24830000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="315647000" />
+    <option name="totallyTimeSpent" value="318785000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -844,16 +843,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="890">
-          <caret line="436" column="49" selection-start-line="436" selection-start-column="49" selection-end-line="436" selection-end-column="49" />
+        <state relative-caret-position="2925">
+          <caret line="455" column="25" selection-start-line="455" selection-start-column="17" selection-end-line="455" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ConnichiwaExampleApplication/www/remoteDeviceMap.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="221" column="59" selection-start-line="221" selection-start-column="59" selection-end-line="221" selection-end-column="59" />
+        <state relative-caret-position="245">
+          <caret line="295" column="116" selection-start-line="295" selection-start-column="116" selection-end-line="295" selection-end-column="116" />
           <folding>
             <element signature="e#0#42#0" expanded="false" />
           </folding>

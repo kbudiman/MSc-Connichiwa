@@ -292,7 +292,8 @@ function annotateMarker() {
 
 function deleteMarker() {
   delMarkerLatLng(lat, lng);
-  Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remoteName: localPlaceName});
+  var markerId = getMarkerUniqueId(lat, lng);
+  Connichiwa.broadcast ('deleteMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remoteName: placeNames[markerId]});
   $('#floating-panel').hide();
 }
 
@@ -376,7 +377,7 @@ function promptHoursAndOrder(lat, lng) {
 
 
     visitDuration = hours + (min / 60);
-    visitDuration = round(visitDuration,1);
+    visitDuration = round(visitDuration,2);
 
     /*hms = document.getElementById("visitduration").value;
 
@@ -385,7 +386,7 @@ function promptHoursAndOrder(lat, lng) {
 
     visitDuration = (+hours[0]) + (+hours[1] / 60);*/
 
-    visitDuration = round(visitDuration, 1);
+    //visitDuration = round(visitDuration, 1);
 
 
     console.log('order: ' + visitOrder + ' duration:' + visitDuration);
@@ -403,11 +404,11 @@ function promptHoursAndOrder(lat, lng) {
       durations[markerId] = {order: $( "#order option:selected" ).text(), durHr: $( "#hours option:selected" ).text(), durMin: $( "#minutes option:selected" ).text()};
       //setAnnotateWindowContent(lat,lng, durations[markerId].order, durations[markerId].durHr, durations[markerId].durMin);
 
-      contentString = localPlaceName + ', Visit Order: ' + visitOrder + ', Duration: ' + visitDuration + 'hr';
+      contentString = placeNames[markerId] + ', Visit Order: ' + visitOrder + ', Duration: ' + visitDuration + 'hr';
 
 
 
-      Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: localPlaceName, remoteVisitOrder: visitOrder, remoteVisitDur: visitDuration, remoteHr: durations[markerId].durHr, remoteMin: durations[markerId].durMin});
+      Connichiwa.broadcast ('anotateMarker', {remoteMarkerLat: lat, remoteMarkerLng: lng, remotePrompt: contentString, remoteName: placeNames[markerId], remoteVisitOrder: visitOrder, remoteVisitDur: visitDuration, remoteHr: durations[markerId].durHr, remoteMin: durations[markerId].durMin});
 
       $('#annotate-panel').hide();
     }
@@ -426,7 +427,7 @@ function promptHoursAndOrder(lat, lng) {
       durations[markerId] = {order: $( "#order option:selected" ).text(), durHr: $( "#hours option:selected" ).text(), durMin: $( "#minutes option:selected" ).text()};
       //setAnnotateWindowContent(lat,lng, durations[markerId].order, durations[markerId].durHr, durations[markerId].durMin);
 
-      Connichiwa.broadcast('updateAnnotate', {remoteMarkerLat: lat, remoteMarkerLng: lng, oldDur: oldIbDur, newOrder: visitOrder, newDur: visitDuration, remoteVisitDur: visitDuration, newHr: durations[markerId].durHr, newMin: durations[markerId].durMin});
+      Connichiwa.broadcast('updateAnnotate', {remoteMarkerLat: lat, remoteMarkerLng: lng, place: placeNames[markerId], oldDur: oldIbDur, newOrder: visitOrder, newDur: visitDuration, remoteVisitDur: visitDuration, newHr: durations[markerId].durHr, newMin: durations[markerId].durMin});
 
       $('#annotate-panel').hide();
     }
